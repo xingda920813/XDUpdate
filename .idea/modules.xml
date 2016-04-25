@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/XDUpdate.iml" filepath="$PROJECT_DIR$/XDUpdate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xdupdate/xdupdate.iml" filepath="$PROJECT_DIR$/xdupdate/xdupdate.iml" />
+    </modules>
+  </component>
+</project>
