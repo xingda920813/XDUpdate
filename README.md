@@ -3,6 +3,12 @@ Android 自动更新/在线参数
 
 适用于Android 4.0以上版本(API Level 14以上)。
 
+![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_notification.png)
+
+![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_dialog.png)
+
+![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_downloading.png)
+
 # 引入
 ## 1.导入XDUpdate-x.x.x.jar
 
