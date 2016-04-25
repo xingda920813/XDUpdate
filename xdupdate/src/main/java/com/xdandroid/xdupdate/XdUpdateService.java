@@ -66,7 +66,7 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length)+"M/"+ XdUpdateUtils.formatToMegaBytes(fileLength)+"M").setProgress(fileLength, msg.what, false).getNotification());
+                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length)+"M/"+ XdUpdateUtils.formatToMegaBytes(fileLength)+"M").setProgress(fileLength, length, false).getNotification());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 512);
                     }
                     break;
