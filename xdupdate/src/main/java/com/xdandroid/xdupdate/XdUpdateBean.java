@@ -57,16 +57,4 @@ public class XdUpdateBean implements Serializable {
     public void setVersionName(String versionName) {
         this.versionName = versionName;
     }
-
-    @Override
-    public String toString() {
-        return "XdUpdateBean{" +
-                "md5='" + md5 + '\'' +
-                ", versionCode=" + versionCode +
-                ", size=" + size +
-                ", versionName='" + versionName + '\'' +
-                ", url='" + url + '\'' +
-                ", note='" + note + '\'' +
-                '}';
-    }
 }

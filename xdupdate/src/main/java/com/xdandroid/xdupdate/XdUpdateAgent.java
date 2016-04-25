@@ -2,9 +2,14 @@ package com.xdandroid.xdupdate;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
@@ -34,6 +39,7 @@ public class XdUpdateAgent {
     private String jsonUrl;
     private boolean enabled;
     private int iconResId;
+    private boolean showNotification;
 
     public void forceUpdate(final Activity activity) {
         forceUpdate = true;
@@ -110,7 +116,6 @@ public class XdUpdateAgent {
                                 if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) {
                                     return;
                                 }
-                                forceUpdate = false;
                                 final File file = new File(activity.getExternalCacheDir(),"download.apk");
                                 boolean fileExists = false;
                                 if (file.exists()) {
@@ -120,38 +125,12 @@ public class XdUpdateAgent {
                                         file.delete();
                                     }
                                 }
-                                AlertDialog.Builder builder = new AlertDialog.Builder(activity).setCancelable(false)
-                                        .setTitle(versionName + "版本更新")
-                                        .setMessage(xdUpdateBean.getNote())
-                                        .setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
-                                            }
-                                        });
-                                if (fileExists) {
-                                    builder.setPositiveButton("立即安装(已下载)", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Uri uri = Uri.fromFile(file);
-                                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                                            intent.setDataAndType(uri, "application/vnd.android.package-archive");
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            activity.startActivity(intent);
-                                        }
-                                    });
+                                if (showNotification && !forceUpdate) {
+                                    showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
                                 } else {
-                                    builder.setPositiveButton("立即下载(" + XdUpdateUtils.formatToMegaBytes(xdUpdateBean.getSize()) + "M)", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent(activity,XdUpdateService.class);
-                                            intent.putExtra("xdUpdateBean", xdUpdateBean);
-                                            intent.putExtra("appIcon",iconResId);
-                                            activity.startService(intent);
-                                        }
-                                    });
+                                    showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
                                 }
-                                builder.show();
+                                forceUpdate = false;
                             }
                         });
                     }
@@ -160,12 +139,73 @@ public class XdUpdateAgent {
         }).start();
     }
 
+    private void showNotification(final SharedPreferences sp, final File file, final boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
+        activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                showAlertDialog(sp,file, fileExists,activity,versionName,xdUpdateBean,versionCode);
+            }
+        },new IntentFilter("com.xdandroid.xdupdate.UpdateDialog"));
+        activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
+            }
+        },new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
+        Notification.Builder builder = new Notification.Builder(activity)
+                .setAutoCancel(true)
+                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + "版本更新")
+                .setSmallIcon(iconResId)
+                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + "版本更新")
+                .setContentText(xdUpdateBean.getNote())
+                .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
+                .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
+        NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(1,builder.getNotification());
+    }
+
+    private void showAlertDialog(final SharedPreferences sp, final File file, boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity).setCancelable(false)
+                .setTitle(versionName + "版本更新")
+                .setMessage(xdUpdateBean.getNote())
+                .setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
+                    }
+                });
+        if (fileExists) {
+            builder.setPositiveButton("立即安装(已下载)", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Uri uri = Uri.fromFile(file);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    activity.startActivity(intent);
+                }
+            });
+        } else {
+            builder.setPositiveButton("立即下载(" + XdUpdateUtils.formatToMegaBytes(xdUpdateBean.getSize()) + "M)", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(activity,XdUpdateService.class);
+                    intent.putExtra("xdUpdateBean", xdUpdateBean);
+                    intent.putExtra("appIcon",iconResId);
+                    activity.startService(intent);
+                }
+            });
+        }
+        builder.show();
+    }
+
     public static class Builder {
 
         private String mJsonUrl = "";
         private boolean mAllow4G = false;
         private boolean mEnabled = true;
         private int mIconResId = 0;
+        private boolean mShowNotification = true;
 
         public Builder setJsonUrl(String jsonUrl) {
             mJsonUrl = jsonUrl;
@@ -187,13 +227,19 @@ public class XdUpdateAgent {
             return this;
         }
 
+        public Builder setShowNotification(boolean showNotification) {
+            mShowNotification = showNotification;
+            return this;
+        }
+
         public XdUpdateAgent build() {
-            XdUpdateAgent agent = new XdUpdateAgent();
-            agent.jsonUrl = mJsonUrl;
-            agent.allow4G = mAllow4G;
-            agent.enabled = mEnabled;
-            agent.iconResId = mIconResId;
-            return agent;
+            XdUpdateAgent updateAgent = new XdUpdateAgent();
+            updateAgent.jsonUrl = mJsonUrl;
+            updateAgent.allow4G = mAllow4G;
+            updateAgent.enabled = mEnabled;
+            updateAgent.iconResId = mIconResId;
+            updateAgent.showNotification = mShowNotification;
+            return updateAgent;
         }
     }
 }

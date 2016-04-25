@@ -34,11 +34,15 @@ public class XdUpdateService extends Service {
     private File file;
     private volatile boolean interrupted;
 
+    private static final int TYPE_FINISHED = 0;
+    private static final int TYPE_DOWNLOADING = 1;
+
     class DeleteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             interrupted = true;
-            manager.cancel(1);
+            handler.sendEmptyMessage(TYPE_FINISHED);
+            manager.cancel(2);
             if (file != null && file.exists()) {
                 file.delete();
             }
@@ -51,15 +55,24 @@ public class XdUpdateService extends Service {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == fileLength) {
-                manager.cancel(1);
-            } else {
-                if (interrupted) {
-                    manager.cancel(1);
-                    return;
-                }
-                manager.notify(1, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length)+"M/"+ XdUpdateUtils.formatToMegaBytes(fileLength)+"M").setProgress(fileLength, msg.what, false).build());
-                sendEmptyMessageDelayed(length,512);
+            if (hasMessages(TYPE_DOWNLOADING)) {
+                removeMessages(TYPE_DOWNLOADING);
+            }
+            if (hasMessages(TYPE_FINISHED)) {
+                removeMessages(TYPE_FINISHED);
+            }
+            switch (msg.what) {
+                case TYPE_DOWNLOADING:
+                    if (interrupted) {
+                        manager.cancel(2);
+                    } else {
+                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length)+"M/"+ XdUpdateUtils.formatToMegaBytes(fileLength)+"M").setProgress(fileLength, msg.what, false).getNotification());
+                        sendEmptyMessageDelayed(TYPE_DOWNLOADING, 512);
+                    }
+                    break;
+                case TYPE_FINISHED:
+                    manager.cancel(2);
+                    break;
             }
         }
     };
@@ -78,7 +91,7 @@ public class XdUpdateService extends Service {
             return START_NOT_STICKY;
         }
         deleteReceiver = new DeleteReceiver();
-        registerReceiver(deleteReceiver,new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
+        getApplicationContext().registerReceiver(deleteReceiver,new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
         builder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
@@ -86,7 +99,7 @@ public class XdUpdateService extends Service {
                 .setSmallIcon(iconResId)
                 .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+"正在下载...")
                 .setContentText("")
-                .setDeleteIntent(PendingIntent.getBroadcast(this,1,new Intent("com.xdandroid.xdupdate.DeleteUpdate"),PendingIntent.FLAG_CANCEL_CURRENT));
+                .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(),3,new Intent("com.xdandroid.xdupdate.DeleteUpdate"),PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         new Thread(new Runnable() {
             @Override
@@ -108,7 +121,7 @@ public class XdUpdateService extends Service {
                     fos = new FileOutputStream(file);
                     byte[] buffer = new byte[1024];
                     int hasRead;
-                    handler.sendEmptyMessage(0);
+                    handler.sendEmptyMessage(TYPE_DOWNLOADING);
                     interrupted = false;
                     while ((hasRead = is.read(buffer)) > 0) {
                         if (interrupted) {
@@ -117,7 +130,7 @@ public class XdUpdateService extends Service {
                         fos.write(buffer, 0 , hasRead);
                         length = length + hasRead;
                     }
-                    handler.sendEmptyMessage(fileLength);
+                    handler.sendEmptyMessage(TYPE_FINISHED);
                     length = 0;
                     if (file.exists()) {
                         if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
@@ -130,7 +143,8 @@ public class XdUpdateService extends Service {
                             file.delete();
                         }
                     }
-                } catch (IOException ignored) {
+                } catch (IOException e) {
+                    sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
                 } finally {
                     if (fos != null) {
                         try {
@@ -159,7 +173,7 @@ public class XdUpdateService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (deleteReceiver != null) {
-            unregisterReceiver(deleteReceiver);
+            getApplicationContext().unregisterReceiver(deleteReceiver);
         }
     }
 }
