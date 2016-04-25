@@ -28,16 +28,16 @@ public class XdUpdateService extends Service {
 
     private Notification.Builder builder;
     private NotificationManager manager;
-    private int fileLength,length;
+    private volatile int fileLength;
+    private volatile int length;
     private DeleteReceiver deleteReceiver;
     private File file;
-    private boolean interrupted;
+    private volatile boolean interrupted;
 
     class DeleteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             interrupted = true;
-            length = fileLength;
             manager.cancel(1);
             if (file != null && file.exists()) {
                 file.delete();
@@ -54,7 +54,7 @@ public class XdUpdateService extends Service {
             if (msg.what == fileLength) {
                 manager.cancel(1);
             } else {
-                if (length == fileLength) {
+                if (interrupted) {
                     manager.cancel(1);
                     return;
                 }
