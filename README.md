@@ -12,7 +12,7 @@ Android 自动更新/在线参数
 # 引入
 ## 1.添加二进制
 
-引入XDUpdate-1.0.1.jar或
+引入XDUpdate-1.0.2.jar或build.gradle中添加
 
     compile 'com.xdandroid:xdupdate:1.0.1'
 
@@ -43,6 +43,12 @@ Android 自动更新/在线参数
                 .setShowNotification(true)                    
                 //使用通知提示用户有更新，用户点击通知后弹出提示框，而不是检测到更新直接弹框(默认:true，仅对非强制检查更新有效)
                 .setIconResId(R.mipmap.ic_launcher)           //设置在通知栏显示的通知图标资源ID(必须指定，一般为应用图标)
+                .setOnUpdateListener(new XdUpdateAgent.OnUpdateListener() {     //取得更新信息JSON后的回调(可选指定)
+                        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {     //主线程回调，可执行UI操作
+                            //needUpdate为是否需要更新，updateBean为JSON对应的数据结构
+                            if (!needUpdate) Toast.makeText(context,"您的应用为最新版本",Toast.LENGTH_SHORT).show();
+                        }
+                    })
                 .build();
 
 ## 3.检查更新(Activity内)
@@ -68,7 +74,7 @@ Android 自动更新/在线参数
     XdOnlineConfig onlineConfig = new XdOnlineConfig.Builder()
                     .setMapUrl("http://contoso.com/map.obj")    //参数文件的URL
                     .setOnConfigAcquiredListener(new XdOnlineConfig.OnConfigAcquiredListener() {
-                        public void onConfigAcquired(Map<Object, Object> map) {
+                        public void onConfigAcquired(Map<Object, Object> map) {     //主线程回调，可执行UI操作
                             System.out.println(map);            //成功，传入Map
                         }    
                         public void onFailure(Exception e) {

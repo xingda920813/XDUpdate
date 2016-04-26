@@ -1,5 +1,6 @@
 package com.xdandroid.xdupdate;
 
+import android.os.Handler;
 import android.text.TextUtils;
 
 import java.io.IOException;
@@ -43,9 +44,20 @@ public class XdOnlineConfig {
                     connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
                     is = connection.getInputStream();
-                    l.onConfigAcquired(XdUpdateUtils.toMap(is));
-                } catch (Exception e) {
-                    l.onFailure(e);
+                    final Map<Object, Object> map = XdUpdateUtils.toMap(is);
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            l.onConfigAcquired(map);
+                        }
+                    });
+                } catch (final Exception e) {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            l.onFailure(e);
+                        }
+                    });
                 } finally {
                     if (is != null) {
                         try {

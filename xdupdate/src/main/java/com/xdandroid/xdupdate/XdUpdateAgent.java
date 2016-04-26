@@ -34,12 +34,17 @@ public class XdUpdateAgent {
     private XdUpdateAgent() {
     }
 
+    public interface OnUpdateListener {
+        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
+    }
+
     private boolean forceUpdate = false;
     private boolean allow4G;
     private String jsonUrl;
     private boolean enabled;
     private int iconResId;
     private boolean showNotification;
+    private OnUpdateListener l;
 
     public void forceUpdate(final Activity activity) {
         forceUpdate = true;
@@ -99,15 +104,18 @@ public class XdUpdateAgent {
                 } catch (JSONException e) {
                     return;
                 }
-                int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
-                String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
+                final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
+                final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
                 if (currentName != null) {
                     final int versionCode = xdUpdateBean.getVersionCode();
                     final String versionName = xdUpdateBean.getVersionName();
-                    if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
+                                if (l != null) {
+                                    l.onUpdate(true,xdUpdateBean);
+                                }
                                 final SharedPreferences sp = activity.getSharedPreferences("update",Context.MODE_MULTI_PROCESS);
                                 long lastIgnoredDayBegin = sp.getLong("time", 0);
                                 int lastIgnoredCode = sp.getInt("versionCode",0);
@@ -131,9 +139,13 @@ public class XdUpdateAgent {
                                     showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
                                 }
                                 forceUpdate = false;
+                            } else {
+                                if (l != null) {
+                                    l.onUpdate(false,xdUpdateBean);
+                                }
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             }
         }).start();
@@ -206,6 +218,7 @@ public class XdUpdateAgent {
         private boolean mEnabled = true;
         private int mIconResId = 0;
         private boolean mShowNotification = true;
+        private OnUpdateListener mListener = null;
 
         public Builder setJsonUrl(String jsonUrl) {
             mJsonUrl = jsonUrl;
@@ -232,6 +245,11 @@ public class XdUpdateAgent {
             return this;
         }
 
+        public Builder setOnUpdateListener(OnUpdateListener l) {
+            mListener = l;
+            return this;
+        }
+
         public XdUpdateAgent build() {
             XdUpdateAgent updateAgent = new XdUpdateAgent();
             updateAgent.jsonUrl = mJsonUrl;
@@ -239,6 +257,7 @@ public class XdUpdateAgent {
             updateAgent.enabled = mEnabled;
             updateAgent.iconResId = mIconResId;
             updateAgent.showNotification = mShowNotification;
+            updateAgent.l = mListener;
             return updateAgent;
         }
     }
