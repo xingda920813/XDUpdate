@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'xdupdate'
+
+    publishedGroupId = 'com.xdandroid'
+    libraryName = 'XDUpdate'
+    artifact = 'xdupdate'
+
+    libraryDescription = 'Android AutoUpdate / OnlineConfig'
+
+    siteUrl = 'https://github.com/xingda920813/XDUpdate'
+    gitUrl = 'https://github.com/xingda920813/XDUpdate.git'
+
+    libraryVersion = '1.0.1'
+
+    developerId = 'xingda920813'
+    developerName = 'Da Xing'
+    developerEmail = '570396198@qq.com'
+
+    licenseName = 'The MIT License (MIT)'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -34,3 +58,7 @@ task makeJar(type: Copy) {
 }
 
 makeJar.dependsOn(build)
+
+// Place it at the end of the file
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'bintrayv1.gradle'

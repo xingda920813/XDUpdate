@@ -10,7 +10,11 @@ Android 自动更新/在线参数
 ![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_downloading.png)
 
 # 引入
-## 1.导入XDUpdate-x.x.x.jar
+## 1.添加二进制
+
+引入XDUpdate-1.0.1.jar或
+
+    compile 'com.xdandroid:xdupdate:1.0.1'
 
 ## 2.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
