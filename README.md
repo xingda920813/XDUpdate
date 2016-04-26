@@ -14,7 +14,7 @@ Android 自动更新/在线参数
 
 引入XDUpdate-1.0.2.jar或build.gradle中添加
 
-    compile 'com.xdandroid:xdupdate:1.0.1'
+    compile 'com.xdandroid:xdupdate:1.0.2'
 
 ## 2.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
@@ -44,7 +44,7 @@ Android 自动更新/在线参数
                 //使用通知提示用户有更新，用户点击通知后弹出提示框，而不是检测到更新直接弹框(默认:true，仅对非强制检查更新有效)
                 .setIconResId(R.mipmap.ic_launcher)           //设置在通知栏显示的通知图标资源ID(必须指定，一般为应用图标)
                 .setOnUpdateListener(new XdUpdateAgent.OnUpdateListener() {     //取得更新信息JSON后的回调(可选指定)
-                        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {     //主线程回调，可执行UI操作
+                        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {    //主线程回调，可执行UI操作
                             //needUpdate为是否需要更新，updateBean为JSON对应的数据结构
                             if (!needUpdate) Toast.makeText(context,"您的应用为最新版本",Toast.LENGTH_SHORT).show();
                         }
