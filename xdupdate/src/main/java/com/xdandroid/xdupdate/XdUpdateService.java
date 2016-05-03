@@ -119,7 +119,7 @@ public class XdUpdateService extends Service {
                         file.delete();
                     }
                     fos = new FileOutputStream(file);
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[8192];
                     int hasRead;
                     handler.sendEmptyMessage(TYPE_DOWNLOADING);
                     interrupted = false;
@@ -144,20 +144,11 @@ public class XdUpdateService extends Service {
                         }
                     }
                 } catch (IOException e) {
+                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
                     sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
                 } finally {
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
+                    XdUpdateUtils.closeQuietly(fos);
+                    XdUpdateUtils.closeQuietly(is);
                     if (connection != null) {
                         connection.disconnect();
                     }

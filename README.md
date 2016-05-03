@@ -12,9 +12,9 @@ Android 自动更新/在线参数
 # 引入
 ## 1.添加二进制
 
-引入XDUpdate-1.0.2.jar或build.gradle中添加
+引入XDUpdate-1.0.3.jar或build.gradle中添加
 
-    compile 'com.xdandroid:xdupdate:1.0.2'
+    compile 'com.xdandroid:xdupdate:1.0.3'
 
 ## 2.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
@@ -38,6 +38,7 @@ Android 自动更新/在线参数
 
 ## 2.构建XdUpdateAgent对象
     XdUpdateAgent updateAgent = new XdUpdateAgent.Builder()
+                .setDebugMode(false)                          //是否显示调试信息(默认:false)
                 .setJsonUrl("http://contoso.com/update.json") //JSON文件的URL
                 .setAllow4G(true)                             //是否允许使用运营商网络检查更新(默认:false)
                 .setShowNotification(true)                    
@@ -64,17 +65,19 @@ Android 自动更新/在线参数
 ## 1.准备参数文件
 建立JavaSE项目，先将键值对存放在Map中，然后将Map传入下面的writeObject方法，得到参数文件。
 
-    public static void writeObject(Map<Object,Object> map) throws IOException {
+    public static void writeObject(Map<Serializable,Serializable> map) throws IOException {
         File file = new File("C:\\Desktop\\map.obj");       //指定文件生成路径
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
         oos.writeObject(map);
+        oos.close();
     }
 
 ## 2.得到在线参数
     XdOnlineConfig onlineConfig = new XdOnlineConfig.Builder()
+                    .setDebugMode(false)                        //是否显示调试信息(默认:false)
                     .setMapUrl("http://contoso.com/map.obj")    //参数文件的URL
                     .setOnConfigAcquiredListener(new XdOnlineConfig.OnConfigAcquiredListener() {
-                        public void onConfigAcquired(Map<Object, Object> map) {     //主线程回调，可执行UI操作
+                        public void onConfigAcquired(Map<Serializable, Serializable> map) {     //主线程回调，可执行UI操作
                             System.out.println(map);            //成功，传入Map
                         }    
                         public void onFailure(Exception e) {
@@ -82,6 +85,3 @@ Android 自动更新/在线参数
                         }                           
                     }).build();
     onlineConfig.getOnlineConfig();
-    
-## 3.注意
-Key、Value可以是任意的Object，但要确保Key、Value和Map是可序列化的。

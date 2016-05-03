@@ -79,15 +79,12 @@ public class XdUpdateAgent {
                     connection.connect();
                     is = connection.getInputStream();
                     s = XdUpdateUtils.toString(is);
+                    if (XdConfigs.debugMode) System.out.println(s);
                 } catch (IOException e) {
+                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
                     return;
                 } finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
+                    XdUpdateUtils.closeQuietly(is);
                     if (connection != null) {
                         connection.disconnect();
                     }
@@ -102,6 +99,7 @@ public class XdUpdateAgent {
                     xdUpdateBean.setNote(jsonObject.getString("note"));
                     xdUpdateBean.setMd5(jsonObject.getString("md5"));
                 } catch (JSONException e) {
+                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
                     return;
                 }
                 final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
@@ -247,6 +245,11 @@ public class XdUpdateAgent {
 
         public Builder setOnUpdateListener(OnUpdateListener l) {
             mListener = l;
+            return this;
+        }
+
+        public Builder setDebugMode(boolean debugMode) {
+            XdConfigs.debugMode = debugMode;
             return this;
         }
 

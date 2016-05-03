@@ -8,11 +8,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -56,14 +58,10 @@ public class XdUpdateUtils {
             md5.update(byteBuffer);
             BigInteger bi = new BigInteger(1, md5.digest());
             value = bi.toString(16);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            if (XdConfigs.debugMode) e.printStackTrace(System.err);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignored) {
-                }
-            }
+            closeQuietly(is);
         }
         return value;
     }
@@ -76,6 +74,7 @@ public class XdUpdateUtils {
             applicationInfo = packageManager.getApplicationInfo(app.getPackageName(), 0);
             return (String) packageManager.getApplicationLabel(applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
+            if (XdConfigs.debugMode) e.printStackTrace(System.err);
             return "";
         }
     }
@@ -87,7 +86,8 @@ public class XdUpdateUtils {
         try {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionCode = info.versionCode;
-        } catch (PackageManager.NameNotFoundException ignored) {
+        } catch (PackageManager.NameNotFoundException e) {
+            if (XdConfigs.debugMode) e.printStackTrace(System.err);
         }
         return versionCode;
     }
@@ -99,7 +99,8 @@ public class XdUpdateUtils {
         try {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionName = info.versionName;
-        } catch (PackageManager.NameNotFoundException ignored) {
+        } catch (PackageManager.NameNotFoundException e) {
+            if (XdConfigs.debugMode) e.printStackTrace(System.err);
         }
         return versionName;
     }
@@ -116,35 +117,37 @@ public class XdUpdateUtils {
         ByteArrayOutputStream baos = null;
         try {
             baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192];
             int len;
             while ((len = is.read(buffer)) > 0) {
               baos.write(buffer, 0, len);
             }
             return baos.toString();
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            if (XdConfigs.debugMode) e.printStackTrace(System.err);
             return "";
         } finally {
-            if (baos != null) {
-                try {
-                    baos.close();
-                } catch (IOException ignored) {
-                }
-            }
-            try {
-                is.close();
-            } catch (IOException ignored) {
-            }
+            closeQuietly(baos);
+            closeQuietly(is);
         }
     }
 
-    public static Map<Object,Object> toMap(InputStream is) throws IOException,ClassNotFoundException,NullPointerException {
+    public static Map<Serializable,Serializable> toMap(InputStream is) throws IOException,ClassNotFoundException,NullPointerException {
         if (is == null) {
             throw new NullPointerException("inputStream == null");
         }
         ObjectInputStream ois = new ObjectInputStream(is);
-        Map<Object,Object> map = (Map<Object, Object>) ois.readObject();
-        ois.close();
+        @SuppressWarnings("unchecked") Map<Serializable,Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
+        closeQuietly(ois);
         return map;
+    }
+
+    public static void closeQuietly(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Throwable ignored) {
+            }
+        }
     }
 }

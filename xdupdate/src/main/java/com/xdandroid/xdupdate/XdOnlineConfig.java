@@ -1,10 +1,12 @@
 package com.xdandroid.xdupdate;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class XdOnlineConfig {
     private OnConfigAcquiredListener l;
 
     public interface OnConfigAcquiredListener {
-        public void onConfigAcquired(Map<Object, Object> map);
+        public void onConfigAcquired(Map<Serializable, Serializable> map);
         public void onFailure(Exception e);
     }
 
@@ -44,27 +46,24 @@ public class XdOnlineConfig {
                     connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
                     is = connection.getInputStream();
-                    final Map<Object, Object> map = XdUpdateUtils.toMap(is);
-                    new Handler().post(new Runnable() {
+                    final Map<Serializable, Serializable> map = XdUpdateUtils.toMap(is);
+                    if (XdConfigs.debugMode) System.out.println(map);
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
                             l.onConfigAcquired(map);
                         }
                     });
                 } catch (final Exception e) {
-                    new Handler().post(new Runnable() {
+                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
                             l.onFailure(e);
                         }
                     });
                 } finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
+                    XdUpdateUtils.closeQuietly(is);
                     if (connection != null) {
                         connection.disconnect();
                     }
@@ -91,6 +90,11 @@ public class XdOnlineConfig {
 
         public Builder setOnConfigAcquiredListener(OnConfigAcquiredListener l) {
             mListener = l;
+            return this;
+        }
+
+        public Builder setDebugMode(boolean debugMode) {
+            XdConfigs.debugMode = debugMode;
             return this;
         }
 
