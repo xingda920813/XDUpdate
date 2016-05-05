@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
@@ -47,7 +46,7 @@ public class XdOnlineConfig {
                     connection.connect();
                     is = connection.getInputStream();
                     final Map<Serializable, Serializable> map = XdUpdateUtils.toMap(is);
-                    if (XdConfigs.debugMode) System.out.println(map);
+                    if (XdConstants.debugMode) System.out.println(map);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -55,7 +54,7 @@ public class XdOnlineConfig {
                         }
                     });
                 } catch (final Exception e) {
-                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.debugMode) e.printStackTrace(System.err);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -94,7 +93,7 @@ public class XdOnlineConfig {
         }
 
         public Builder setDebugMode(boolean debugMode) {
-            XdConfigs.debugMode = debugMode;
+            XdConstants.debugMode = debugMode;
             return this;
         }
 

@@ -59,7 +59,7 @@ public class XdUpdateUtils {
             BigInteger bi = new BigInteger(1, md5.digest());
             value = bi.toString(16);
         } catch (Exception e) {
-            if (XdConfigs.debugMode) e.printStackTrace(System.err);
+            if (XdConstants.debugMode) e.printStackTrace(System.err);
         } finally {
             closeQuietly(is);
         }
@@ -74,7 +74,7 @@ public class XdUpdateUtils {
             applicationInfo = packageManager.getApplicationInfo(app.getPackageName(), 0);
             return (String) packageManager.getApplicationLabel(applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConfigs.debugMode) e.printStackTrace(System.err);
+            if (XdConstants.debugMode) e.printStackTrace(System.err);
             return "";
         }
     }
@@ -87,7 +87,7 @@ public class XdUpdateUtils {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionCode = info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConfigs.debugMode) e.printStackTrace(System.err);
+            if (XdConstants.debugMode) e.printStackTrace(System.err);
         }
         return versionCode;
     }
@@ -100,7 +100,7 @@ public class XdUpdateUtils {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionName = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConfigs.debugMode) e.printStackTrace(System.err);
+            if (XdConstants.debugMode) e.printStackTrace(System.err);
         }
         return versionName;
     }
@@ -124,7 +124,7 @@ public class XdUpdateUtils {
             }
             return baos.toString();
         } catch (IOException e) {
-            if (XdConfigs.debugMode) e.printStackTrace(System.err);
+            if (XdConstants.debugMode) e.printStackTrace(System.err);
             return "";
         } finally {
             closeQuietly(baos);

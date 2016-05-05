@@ -79,9 +79,9 @@ public class XdUpdateAgent {
                     connection.connect();
                     is = connection.getInputStream();
                     s = XdUpdateUtils.toString(is);
-                    if (XdConfigs.debugMode) System.out.println(s);
+                    if (XdConstants.debugMode) System.out.println(s);
                 } catch (IOException e) {
-                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.debugMode) e.printStackTrace(System.err);
                     return;
                 } finally {
                     XdUpdateUtils.closeQuietly(is);
@@ -99,7 +99,7 @@ public class XdUpdateAgent {
                     xdUpdateBean.setNote(jsonObject.getString("note"));
                     xdUpdateBean.setMd5(jsonObject.getString("md5"));
                 } catch (JSONException e) {
-                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.debugMode) e.printStackTrace(System.err);
                     return;
                 }
                 final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
@@ -122,7 +122,7 @@ public class XdUpdateAgent {
                                 if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) {
                                     return;
                                 }
-                                final File file = new File(activity.getExternalCacheDir(),"download.apk");
+                                final File file = new File(activity.getExternalCacheDir(),"update.apk");
                                 boolean fileExists = false;
                                 if (file.exists()) {
                                     if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
@@ -164,9 +164,9 @@ public class XdUpdateAgent {
         },new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
         Notification.Builder builder = new Notification.Builder(activity)
                 .setAutoCancel(true)
-                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + "版本更新")
+                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
                 .setSmallIcon(iconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + "版本更新")
+                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
                 .setContentText(xdUpdateBean.getNote())
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
@@ -176,16 +176,16 @@ public class XdUpdateAgent {
 
     private void showAlertDialog(final SharedPreferences sp, final File file, boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity).setCancelable(false)
-                .setTitle(versionName + "版本更新")
+                .setTitle(versionName + XdConstants.hintText)
                 .setMessage(xdUpdateBean.getNote())
-                .setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+                .setNegativeButton(XdConstants.laterText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
                     }
                 });
         if (fileExists) {
-            builder.setPositiveButton("立即安装(已下载)", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(XdConstants.installText, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Uri uri = Uri.fromFile(file);
@@ -196,7 +196,7 @@ public class XdUpdateAgent {
                 }
             });
         } else {
-            builder.setPositiveButton("立即下载(" + XdUpdateUtils.formatToMegaBytes(xdUpdateBean.getSize()) + "M)", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(XdConstants.downloadText + "(" + XdUpdateUtils.formatToMegaBytes(xdUpdateBean.getSize()) + "M)", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(activity,XdUpdateService.class);
@@ -249,7 +249,37 @@ public class XdUpdateAgent {
         }
 
         public Builder setDebugMode(boolean debugMode) {
-            XdConfigs.debugMode = debugMode;
+            XdConstants.debugMode = debugMode;
+            return this;
+        }
+
+        public Builder setDownloadText(String downloadText) {
+            if (!TextUtils.isEmpty(downloadText))
+            XdConstants.downloadText = downloadText;
+            return this;
+        }
+
+        public Builder setInstallText(String installText) {
+            if (!TextUtils.isEmpty(installText))
+            XdConstants.installText = installText;
+            return this;
+        }
+
+        public Builder setLaterText(String laterText) {
+            if (!TextUtils.isEmpty(laterText))
+            XdConstants.laterText = laterText;
+            return this;
+        }
+
+        public Builder setHintText(String hintText) {
+            if (!TextUtils.isEmpty(hintText))
+                XdConstants.hintText = hintText;
+            return this;
+        }
+
+        public Builder setDownloadingText(String downloadingText) {
+            if (!TextUtils.isEmpty(downloadingText))
+                XdConstants.downloadingText = downloadingText;
             return this;
         }
 

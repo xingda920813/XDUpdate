@@ -95,9 +95,9 @@ public class XdUpdateService extends Service {
         builder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
-                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+"正在下载")
+                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.downloadingText)
                 .setSmallIcon(iconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+"正在下载...")
+                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.downloadingText +"...")
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(),3,new Intent("com.xdandroid.xdupdate.DeleteUpdate"),PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -114,7 +114,7 @@ public class XdUpdateService extends Service {
                     connection.connect();
                     is = connection.getInputStream();
                     fileLength = connection.getContentLength();
-                    file = new File(getExternalCacheDir(),"download.apk");
+                    file = new File(getExternalCacheDir(),"update.apk");
                     if (file.exists()) {
                         file.delete();
                     }
@@ -144,7 +144,7 @@ public class XdUpdateService extends Service {
                         }
                     }
                 } catch (IOException e) {
-                    if (XdConfigs.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.debugMode) e.printStackTrace(System.err);
                     sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
                 } finally {
                     XdUpdateUtils.closeQuietly(fos);
