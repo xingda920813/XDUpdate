@@ -29,10 +29,10 @@ public class XdOnlineConfig {
             return;
         }
         if (TextUtils.isEmpty(mapUrl)) {
-            throw new IllegalArgumentException("Please set mapUrl.");
+            throw new NullPointerException("Please set mapUrl.");
         }
         if (l == null) {
-            throw new IllegalArgumentException("Please set onConfigAcquiredListener.");
+            throw new NullPointerException("Please set onConfigAcquiredListener.");
         }
         new Thread(new Runnable() {
             @Override

@@ -38,6 +38,11 @@ public class XdUpdateAgent {
         public void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
     }
 
+    private AlertDialog dialog;
+    public XdAlertDialog getDialogForDismiss() {
+        return new XdAlertDialog(dialog);
+    }
+
     private boolean forceUpdate = false;
     private boolean uncancelable = false;
     private boolean allow4G;
@@ -67,10 +72,10 @@ public class XdUpdateAgent {
             }
         }
         if (TextUtils.isEmpty(jsonUrl)) {
-            throw new IllegalArgumentException("Please set jsonUrl.");
+            throw new NullPointerException("Please set jsonUrl.");
         }
         if (iconResId == 0) {
-            throw new IllegalArgumentException("Please set iconResId.");
+            throw new NullPointerException("Please set iconResId.");
         }
         new Thread(new Runnable() {
             @Override
@@ -215,7 +220,8 @@ public class XdUpdateAgent {
                 }
             });
         }
-        builder.show();
+        dialog = builder.create();
+        dialog.show();
     }
 
     public static class Builder {

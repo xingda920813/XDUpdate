@@ -12,7 +12,7 @@ Android 自动更新/在线参数
 # 引入
 ## 1.添加二进制
 
-引入XDUpdate-1.0.5.jar或build.gradle中添加
+引入XDUpdate-1.0.6.jar或build.gradle中添加
 
     compile 'com.xdandroid:xdupdate:latest.release'
 

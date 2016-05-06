@@ -12,51 +12,51 @@ public class XdConstants {
     private static String hintText = "版本更新";
     private static String downloadingText = "正在下载";
 
-    public static boolean isDebugMode() {
+    static boolean isDebugMode() {
         return debugMode;
     }
 
-    public static void setDebugMode(boolean debugMode) {
+    static void setDebugMode(boolean debugMode) {
         XdConstants.debugMode = debugMode;
     }
 
-    public static String getDownloadText() {
+    static String getDownloadText() {
         return downloadText;
     }
 
-    public static void setDownloadText(String downloadText) {
+    static void setDownloadText(String downloadText) {
         XdConstants.downloadText = downloadText;
     }
 
-    public static String getInstallText() {
+    static String getInstallText() {
         return installText;
     }
 
-    public static void setInstallText(String installText) {
+    static void setInstallText(String installText) {
         XdConstants.installText = installText;
     }
 
-    public static String getLaterText() {
+    static String getLaterText() {
         return laterText;
     }
 
-    public static void setLaterText(String laterText) {
+    static void setLaterText(String laterText) {
         XdConstants.laterText = laterText;
     }
 
-    public static String getHintText() {
+    static String getHintText() {
         return hintText;
     }
 
-    public static void setHintText(String hintText) {
+    static void setHintText(String hintText) {
         XdConstants.hintText = hintText;
     }
 
-    public static String getDownloadingText() {
+    static String getDownloadingText() {
         return downloadingText;
     }
 
-    public static void setDownloadingText(String downloadingText) {
+    static void setDownloadingText(String downloadingText) {
         XdConstants.downloadingText = downloadingText;
     }
 }
