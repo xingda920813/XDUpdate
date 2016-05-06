@@ -95,9 +95,9 @@ public class XdUpdateService extends Service {
         builder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
-                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.downloadingText)
+                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.getDownloadingText())
                 .setSmallIcon(iconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.downloadingText +"...")
+                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.getDownloadingText() +"...")
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(),3,new Intent("com.xdandroid.xdupdate.DeleteUpdate"),PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -144,7 +144,7 @@ public class XdUpdateService extends Service {
                         }
                     }
                 } catch (IOException e) {
-                    if (XdConstants.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
                     sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
                 } finally {
                     XdUpdateUtils.closeQuietly(fos);

@@ -39,6 +39,7 @@ public class XdUpdateAgent {
     }
 
     private boolean forceUpdate = false;
+    private boolean uncancelable = false;
     private boolean allow4G;
     private String jsonUrl;
     private boolean enabled;
@@ -49,6 +50,11 @@ public class XdUpdateAgent {
     public void forceUpdate(final Activity activity) {
         forceUpdate = true;
         update(activity);
+    }
+
+    public void forceUpdateUncancelable(final Activity activity) {
+        uncancelable = true;
+        forceUpdate(activity);
     }
 
     public void update(final Activity activity) {
@@ -79,9 +85,9 @@ public class XdUpdateAgent {
                     connection.connect();
                     is = connection.getInputStream();
                     s = XdUpdateUtils.toString(is);
-                    if (XdConstants.debugMode) System.out.println(s);
+                    if (XdConstants.isDebugMode()) System.out.println(s);
                 } catch (IOException e) {
-                    if (XdConstants.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
                     return;
                 } finally {
                     XdUpdateUtils.closeQuietly(is);
@@ -99,7 +105,7 @@ public class XdUpdateAgent {
                     xdUpdateBean.setNote(jsonObject.getString("note"));
                     xdUpdateBean.setMd5(jsonObject.getString("md5"));
                 } catch (JSONException e) {
-                    if (XdConstants.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
                     return;
                 }
                 final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
@@ -112,17 +118,17 @@ public class XdUpdateAgent {
                         public void run() {
                             if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
                                 if (l != null) {
-                                    l.onUpdate(true,xdUpdateBean);
+                                    l.onUpdate(true, xdUpdateBean);
                                 }
-                                final SharedPreferences sp = activity.getSharedPreferences("update",Context.MODE_MULTI_PROCESS);
+                                final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_MULTI_PROCESS);
                                 long lastIgnoredDayBegin = sp.getLong("time", 0);
-                                int lastIgnoredCode = sp.getInt("versionCode",0);
-                                String lastIgnoredName = sp.getString("versionName","");
+                                int lastIgnoredCode = sp.getInt("versionCode", 0);
+                                String lastIgnoredName = sp.getString("versionName", "");
                                 long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
                                 if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) {
                                     return;
                                 }
-                                final File file = new File(activity.getExternalCacheDir(),"update.apk");
+                                final File file = new File(activity.getExternalCacheDir(), "update.apk");
                                 boolean fileExists = false;
                                 if (file.exists()) {
                                     if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
@@ -136,12 +142,13 @@ public class XdUpdateAgent {
                                 } else {
                                     showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
                                 }
-                                forceUpdate = false;
                             } else {
                                 if (l != null) {
-                                    l.onUpdate(false,xdUpdateBean);
+                                    l.onUpdate(false, xdUpdateBean);
                                 }
                             }
+                            forceUpdate = false;
+                            uncancelable = false;
                         }
                     });
                 }
@@ -153,39 +160,41 @@ public class XdUpdateAgent {
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                showAlertDialog(sp,file, fileExists,activity,versionName,xdUpdateBean,versionCode);
+                showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
             }
-        },new IntentFilter("com.xdandroid.xdupdate.UpdateDialog"));
+        }, new IntentFilter("com.xdandroid.xdupdate.UpdateDialog"));
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
             }
-        },new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
+        }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
         Notification.Builder builder = new Notification.Builder(activity)
                 .setAutoCancel(true)
-                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
+                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.getHintText())
                 .setSmallIcon(iconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
+                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.getHintText())
                 .setContentText(xdUpdateBean.getNote())
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
         NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(1,builder.getNotification());
+        manager.notify(1, builder.getNotification());
     }
 
     private void showAlertDialog(final SharedPreferences sp, final File file, boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity).setCancelable(false)
-                .setTitle(versionName + XdConstants.hintText)
-                .setMessage(xdUpdateBean.getNote())
-                .setNegativeButton(XdConstants.laterText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
-                    }
-                });
+                .setTitle(versionName + XdConstants.getHintText())
+                .setMessage(xdUpdateBean.getNote());
+        if (!uncancelable) {
+            builder.setNegativeButton(XdConstants.getLaterText(), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
+                }
+            });
+        }
         if (fileExists) {
-            builder.setPositiveButton(XdConstants.installText, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(XdConstants.getInstallText(), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Uri uri = Uri.fromFile(file);
@@ -196,12 +205,12 @@ public class XdUpdateAgent {
                 }
             });
         } else {
-            builder.setPositiveButton(XdConstants.downloadText + "(" + XdUpdateUtils.formatToMegaBytes(xdUpdateBean.getSize()) + "M)", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(XdConstants.getDownloadText() + "(" + XdUpdateUtils.formatToMegaBytes(xdUpdateBean.getSize()) + "M)", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(activity,XdUpdateService.class);
+                    Intent intent = new Intent(activity, XdUpdateService.class);
                     intent.putExtra("xdUpdateBean", xdUpdateBean);
-                    intent.putExtra("appIcon",iconResId);
+                    intent.putExtra("appIcon", iconResId);
                     activity.startService(intent);
                 }
             });
@@ -249,37 +258,37 @@ public class XdUpdateAgent {
         }
 
         public Builder setDebugMode(boolean debugMode) {
-            XdConstants.debugMode = debugMode;
+            XdConstants.setDebugMode(debugMode);
             return this;
         }
 
         public Builder setDownloadText(String downloadText) {
             if (!TextUtils.isEmpty(downloadText))
-            XdConstants.downloadText = downloadText;
+                XdConstants.setDownloadText(downloadText);
             return this;
         }
 
         public Builder setInstallText(String installText) {
             if (!TextUtils.isEmpty(installText))
-            XdConstants.installText = installText;
+                XdConstants.setInstallText(installText);
             return this;
         }
 
         public Builder setLaterText(String laterText) {
             if (!TextUtils.isEmpty(laterText))
-            XdConstants.laterText = laterText;
+                XdConstants.setLaterText(laterText);
             return this;
         }
 
         public Builder setHintText(String hintText) {
             if (!TextUtils.isEmpty(hintText))
-                XdConstants.hintText = hintText;
+                XdConstants.setHintText(hintText);
             return this;
         }
 
         public Builder setDownloadingText(String downloadingText) {
             if (!TextUtils.isEmpty(downloadingText))
-                XdConstants.downloadingText = downloadingText;
+                XdConstants.setDownloadingText(downloadingText);
             return this;
         }
 

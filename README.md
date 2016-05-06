@@ -12,9 +12,9 @@ Android 自动更新/在线参数
 # 引入
 ## 1.添加二进制
 
-引入XDUpdate-1.0.4.jar或build.gradle中添加
+引入XDUpdate-1.0.5.jar或build.gradle中添加
 
-    compile 'com.xdandroid:xdupdate:1.0.4'
+    compile 'com.xdandroid:xdupdate:latest.release'
 
 ## 2.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
@@ -50,6 +50,11 @@ Android 自动更新/在线参数
                             if (!needUpdate) Toast.makeText(context,"您的应用为最新版本",Toast.LENGTH_SHORT).show();
                         }
                     })
+                .setDownloadText("立即下载")                   //可选，默认为左侧所示的文本
+                .setInstallText("立即安装(已下载)")
+                .setLaterText("稍后再说")
+                .setHintText("版本更新")
+                .setDownloadingText("正在下载")
                 .build();
 
 ## 3.检查更新(Activity内)
@@ -60,6 +65,10 @@ Android 自动更新/在线参数
 适用于应用“设置”页面的手动检查更新。此方法无视是否允许使用运营商网络和上面的默认策略，强制检查更新，有更新时直接弹出提示框。     
 
     updateAgent.forceUpdate(this);   
+
+弹出的更新对话框中只有“立即更新”按钮，没有“以后再说”，且不能取消对话框。用户体验不好，不推荐使用。     
+
+    updateAgent.forceUpdateUncancelable(this);   
 
 # 在线参数
 ## 1.准备参数文件

@@ -46,7 +46,7 @@ public class XdOnlineConfig {
                     connection.connect();
                     is = connection.getInputStream();
                     final Map<Serializable, Serializable> map = XdUpdateUtils.toMap(is);
-                    if (XdConstants.debugMode) System.out.println(map);
+                    if (XdConstants.isDebugMode()) System.out.println(map);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -54,7 +54,7 @@ public class XdOnlineConfig {
                         }
                     });
                 } catch (final Exception e) {
-                    if (XdConstants.debugMode) e.printStackTrace(System.err);
+                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -93,7 +93,7 @@ public class XdOnlineConfig {
         }
 
         public Builder setDebugMode(boolean debugMode) {
-            XdConstants.debugMode = debugMode;
+            XdConstants.setDebugMode(debugMode);
             return this;
         }
 
