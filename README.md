@@ -1,7 +1,9 @@
 # XDUpdate
-Android 自动更新/在线参数
+### Android 自动更新/在线参数
 
-适用于Android 4.0以上版本(API Level 14以上)。
+- JSON、APK、Map文件的URL需要支持外链，即可以被直接访问，可考虑放在Git仓库、OSS或自己的服务器上
+
+- 适用于Android 4.0以上版本(API Level 14以上)
 
 ![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_notification.png)
 
