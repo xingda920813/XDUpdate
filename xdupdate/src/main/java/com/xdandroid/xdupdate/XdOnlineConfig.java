@@ -15,9 +15,9 @@ import java.util.Map;
  */
 public class XdOnlineConfig {
 
-    private String mapUrl;
-    private boolean enabled;
-    private OnConfigAcquiredListener l;
+    protected String mapUrl;
+    protected boolean enabled;
+    protected OnConfigAcquiredListener l;
 
     public interface OnConfigAcquiredListener {
         public void onConfigAcquired(Map<Serializable, Serializable> map);
@@ -73,9 +73,9 @@ public class XdOnlineConfig {
 
     public static class Builder {
 
-        private String mMapUrl = "";
-        private boolean mEnabled = true;
-        private OnConfigAcquiredListener mListener = null;
+        protected String mMapUrl = "";
+        protected boolean mEnabled = true;
+        protected OnConfigAcquiredListener mListener = null;
 
         public Builder setMapUrl(String mapUrl) {
             mMapUrl = mapUrl;

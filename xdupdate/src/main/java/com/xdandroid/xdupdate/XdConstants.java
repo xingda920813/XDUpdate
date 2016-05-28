@@ -1,62 +1,64 @@
 package com.xdandroid.xdupdate;
 
+import java.io.Serializable;
+
 /**
  * Created by XingDa on 2016/5/3.
  */
-public class XdConstants {
+public class XdConstants implements Serializable {
 
-    private static boolean debugMode = false;
-    private static String downloadText = "立即下载";
-    private static String installText = "立即安装(已下载)";
-    private static String laterText = "稍后再说";
-    private static String hintText = "版本更新";
-    private static String downloadingText = "正在下载";
+    protected static boolean debugMode = false;
+    protected static String downloadText = "立即下载";
+    protected static String installText = "立即安装(已下载)";
+    protected static String laterText = "稍后再说";
+    protected static String hintText = "版本更新";
+    protected static String downloadingText = "正在下载";
 
-    static boolean isDebugMode() {
+    protected static boolean isDebugMode() {
         return debugMode;
     }
 
-    static void setDebugMode(boolean debugMode) {
+    protected static void setDebugMode(boolean debugMode) {
         XdConstants.debugMode = debugMode;
     }
 
-    static String getDownloadText() {
+    protected static String getDownloadText() {
         return downloadText;
     }
 
-    static void setDownloadText(String downloadText) {
+    protected static void setDownloadText(String downloadText) {
         XdConstants.downloadText = downloadText;
     }
 
-    static String getInstallText() {
+    protected static String getInstallText() {
         return installText;
     }
 
-    static void setInstallText(String installText) {
+    protected static void setInstallText(String installText) {
         XdConstants.installText = installText;
     }
 
-    static String getLaterText() {
+    protected static String getLaterText() {
         return laterText;
     }
 
-    static void setLaterText(String laterText) {
+    protected static void setLaterText(String laterText) {
         XdConstants.laterText = laterText;
     }
 
-    static String getHintText() {
+    protected static String getHintText() {
         return hintText;
     }
 
-    static void setHintText(String hintText) {
+    protected static void setHintText(String hintText) {
         XdConstants.hintText = hintText;
     }
 
-    static String getDownloadingText() {
+    protected static String getDownloadingText() {
         return downloadingText;
     }
 
-    static void setDownloadingText(String downloadingText) {
+    protected static void setDownloadingText(String downloadingText) {
         XdConstants.downloadingText = downloadingText;
     }
 }

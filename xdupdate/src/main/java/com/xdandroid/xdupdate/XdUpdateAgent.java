@@ -31,26 +31,26 @@ import java.util.Date;
  */
 public class XdUpdateAgent {
 
-    private XdUpdateAgent() {
+    protected XdUpdateAgent() {
     }
 
     public interface OnUpdateListener {
         public void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
     }
 
-    private AlertDialog dialog;
-    public XdAlertDialog getDialogForDismiss() {
+    protected AlertDialog dialog;
+    public XdAlertDialog getDialog() {
         return new XdAlertDialog(dialog);
     }
 
-    private boolean forceUpdate = false;
-    private boolean uncancelable = false;
-    private boolean allow4G;
-    private String jsonUrl;
-    private boolean enabled;
-    private int iconResId;
-    private boolean showNotification;
-    private OnUpdateListener l;
+    protected boolean forceUpdate = false;
+    protected boolean uncancelable = false;
+    protected boolean allow4G;
+    protected String jsonUrl;
+    protected boolean enabled;
+    protected int iconResId;
+    protected boolean showNotification;
+    protected OnUpdateListener l;
 
     public void forceUpdate(final Activity activity) {
         forceUpdate = true;
@@ -161,7 +161,7 @@ public class XdUpdateAgent {
         }).start();
     }
 
-    private void showNotification(final SharedPreferences sp, final File file, final boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
+    protected void showNotification(final SharedPreferences sp, final File file, final boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -186,7 +186,7 @@ public class XdUpdateAgent {
         manager.notify(1, builder.getNotification());
     }
 
-    private void showAlertDialog(final SharedPreferences sp, final File file, boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
+    protected void showAlertDialog(final SharedPreferences sp, final File file, boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity).setCancelable(false)
                 .setTitle(versionName + XdConstants.getHintText())
                 .setMessage(xdUpdateBean.getNote());
@@ -226,12 +226,12 @@ public class XdUpdateAgent {
 
     public static class Builder {
 
-        private String mJsonUrl = "";
-        private boolean mAllow4G = false;
-        private boolean mEnabled = true;
-        private int mIconResId = 0;
-        private boolean mShowNotification = true;
-        private OnUpdateListener mListener = null;
+        protected String mJsonUrl = "";
+        protected boolean mAllow4G = false;
+        protected boolean mEnabled = true;
+        protected int mIconResId = 0;
+        protected boolean mShowNotification = true;
+        protected OnUpdateListener mListener = null;
 
         public Builder setJsonUrl(String jsonUrl) {
             mJsonUrl = jsonUrl;

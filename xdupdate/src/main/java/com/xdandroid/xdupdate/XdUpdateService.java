@@ -26,18 +26,18 @@ import java.net.URL;
  */
 public class XdUpdateService extends Service {
 
-    private Notification.Builder builder;
-    private NotificationManager manager;
-    private volatile int fileLength;
-    private volatile int length;
-    private DeleteReceiver deleteReceiver;
-    private File file;
-    private volatile boolean interrupted;
+    protected Notification.Builder builder;
+    protected NotificationManager manager;
+    protected volatile int fileLength;
+    protected volatile int length;
+    protected DeleteReceiver deleteReceiver;
+    protected File file;
+    protected volatile boolean interrupted;
 
-    private static final int TYPE_FINISHED = 0;
-    private static final int TYPE_DOWNLOADING = 1;
+    protected static final int TYPE_FINISHED = 0;
+    protected static final int TYPE_DOWNLOADING = 1;
 
-    class DeleteReceiver extends BroadcastReceiver {
+    protected class DeleteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             interrupted = true;
@@ -51,7 +51,7 @@ public class XdUpdateService extends Service {
     }
 
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
+    protected Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
