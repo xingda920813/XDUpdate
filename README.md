@@ -12,13 +12,25 @@
 ![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_downloading.png)
 
 # 引入
-## 1.添加二进制
+## 1.添加依赖
 
-引入XDUpdate-1.0.7.jar或build.gradle中添加
+build.gradle中添加
 
-    compile 'com.xdandroid:xdupdate:1.0.7'
+	compile 'com.google.code.gson:gson:${latest.version}'
+    compile 'com.squareup.okhttp3:okhttp:${latest.version}'
+    compile 'com.squareup.okio:okio:${latest.version}'
+    compile 'io.reactivex:rxandroid:${latest.version}'
+    compile 'io.reactivex:rxjava:${latest.version}'
+    compile 'com.trello:rxlifecycle:${latest.version}'
+    compile 'com.trello:rxlifecycle-components:${latest.version}'
 
-## 2.AndroidManifest.xml中添加：
+## 2.添加二进制
+
+引入XDUpdate-1.1.0.jar或build.gradle中添加
+
+    compile 'com.xdandroid:xdupdate:1.1.0'
+
+## 3.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>      //判断是否是Wifi
     <uses-permission android:name="android.permission.INTERNET"/>                  //连接网络检查更新、下载APK

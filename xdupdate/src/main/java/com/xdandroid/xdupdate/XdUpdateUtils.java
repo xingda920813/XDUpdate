@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +27,16 @@ import java.util.Map;
  * Created by XingDa on 2016/04/24.
  */
 public class XdUpdateUtils {
+
+    public static void closeQuietly(Closeable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (Throwable ignored) {
+
+            }
+        }
+    }
 
     public static Date dayBegin(final Date date) {
         Calendar c = Calendar.getInstance();
@@ -58,7 +67,7 @@ public class XdUpdateUtils {
             md5.update(byteBuffer);
             BigInteger bi = new BigInteger(1, md5.digest());
             value = bi.toString(16);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
         } finally {
             closeQuietly(is);
@@ -110,28 +119,6 @@ public class XdUpdateUtils {
         return networkInfo != null && networkInfo.isConnected() && (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET || networkInfo.getType() == 17 || networkInfo.getType() == -1 || networkInfo.getType() == 13 || networkInfo.getType() == 16);
     }
 
-    public static String toString(InputStream is) {
-        if (is == null) {
-            return "";
-        }
-        ByteArrayOutputStream baos = null;
-        try {
-            baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[8192];
-            int len;
-            while ((len = is.read(buffer)) > 0) {
-              baos.write(buffer, 0, len);
-            }
-            return baos.toString();
-        } catch (IOException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
-            return "";
-        } finally {
-            closeQuietly(baos);
-            closeQuietly(is);
-        }
-    }
-
     public static Map<Serializable,Serializable> toMap(InputStream is) throws IOException,ClassNotFoundException,NullPointerException {
         if (is == null) {
             throw new NullPointerException("inputStream == null");
@@ -140,14 +127,5 @@ public class XdUpdateUtils {
         @SuppressWarnings("unchecked") Map<Serializable,Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
         closeQuietly(ois);
         return map;
-    }
-
-    public static void closeQuietly(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (Throwable ignored) {
-            }
-        }
     }
 }

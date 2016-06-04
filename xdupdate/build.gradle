@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/xingda920813/XDUpdate'
     gitUrl = 'https://github.com/xingda920813/XDUpdate.git'
 
-    libraryVersion = '1.0.7'
+    libraryVersion = '1.1.0'
 
     developerId = 'xingda920813'
     developerName = 'Da Xing'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 9
+        versionName "1.1.0"
     }
     buildTypes {
         release {
@@ -46,15 +46,21 @@ android {
 }
 
 dependencies {
-
+    provided 'com.google.code.gson:gson:latest.release'
+    provided 'com.squareup.okhttp3:okhttp:latest.release'
+    provided 'com.squareup.okio:okio:latest.release'
+    provided 'io.reactivex:rxandroid:latest.release'
+    provided 'io.reactivex:rxjava:latest.release'
+    provided 'com.trello:rxlifecycle:latest.release'
+    provided 'com.trello:rxlifecycle-components:latest.release'
 }
 
 task makeJar(type: Copy) {
-    delete 'build/libs/XDUpdate-1.0.7.jar'
+    delete 'build/libs/XDUpdate-1.1.0.jar'
     from('build/intermediates/bundles/release/')
     into('build/libs/')
     include('classes.jar')
-    rename ('classes.jar', 'XDUpdate-1.0.7.jar')
+    rename ('classes.jar', 'XDUpdate-1.1.0.jar')
 }
 
 makeJar.dependsOn(build)

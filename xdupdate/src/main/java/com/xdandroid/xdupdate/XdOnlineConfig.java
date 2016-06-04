@@ -1,14 +1,19 @@
 package com.xdandroid.xdupdate;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by XingDa on 2016/4/25.
@@ -21,54 +26,55 @@ public class XdOnlineConfig {
 
     public interface OnConfigAcquiredListener {
         public void onConfigAcquired(Map<Serializable, Serializable> map);
-        public void onFailure(Exception e);
+        public void onFailure(Throwable e);
     }
 
     public void getOnlineConfig() {
-        if (!enabled) {
-            return;
-        }
-        if (TextUtils.isEmpty(mapUrl)) {
-            throw new NullPointerException("Please set mapUrl.");
-        }
-        if (l == null) {
-            throw new NullPointerException("Please set onConfigAcquiredListener.");
-        }
-        new Thread(new Runnable() {
+        if (!enabled) return;
+        if (TextUtils.isEmpty(mapUrl)) throw new NullPointerException("Please set mapUrl.");
+        if (l == null) throw new NullPointerException("Please set onConfigAcquiredListener.");
+        Observable.create(new Observable.OnSubscribe<Map<Serializable, Serializable>>() {
             @Override
-            public void run() {
-                URL url;
-                HttpURLConnection connection = null;
+            public void call(Subscriber<? super Map<Serializable, Serializable>> subscriber) {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(mapUrl).build();
+                Response response;
                 InputStream is = null;
                 try {
-                    url = new URL(mapUrl);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-                    is = connection.getInputStream();
-                    final Map<Serializable, Serializable> map = XdUpdateUtils.toMap(is);
-                    if (XdConstants.isDebugMode()) System.out.println(map);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            l.onConfigAcquired(map);
-                        }
-                    });
-                } catch (final Exception e) {
-                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            l.onFailure(e);
-                        }
-                    });
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        is = response.body().byteStream();
+                        final Map<Serializable, Serializable> map = XdUpdateUtils.toMap(is);
+                        if (XdConstants.isDebugMode()) System.out.println(map);
+                        subscriber.onNext(map);
+                    } else {
+                        subscriber.onError(new IOException(response.code() + " : " + response.body().string()));
+                    }
+                } catch (Throwable e) {
+                    subscriber.onError(e);
                 } finally {
                     XdUpdateUtils.closeQuietly(is);
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
                 }
             }
-        }).start();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<Serializable, Serializable>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                        l.onFailure(e);
+                    }
+
+                    @Override
+                    public void onNext(Map<Serializable, Serializable> map) {
+                        l.onConfigAcquired(map);
+                    }
+                });
     }
 
     public static class Builder {

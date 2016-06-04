@@ -12,19 +12,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.trello.rxlifecycle.ActivityLifecycleProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by XingDa on 2016/04/24.
@@ -32,15 +35,7 @@ import java.util.Date;
 public class XdUpdateAgent {
 
     protected XdUpdateAgent() {
-    }
 
-    public interface OnUpdateListener {
-        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
-    }
-
-    protected AlertDialog dialog;
-    public XdAlertDialog getDialog() {
-        return new XdAlertDialog(dialog);
     }
 
     protected boolean forceUpdate = false;
@@ -51,6 +46,12 @@ public class XdUpdateAgent {
     protected int iconResId;
     protected boolean showNotification;
     protected OnUpdateListener l;
+
+    protected AlertDialog dialog;
+
+    public AlertDialog getDialog() {
+        return dialog;
+    }
 
     public void forceUpdate(final Activity activity) {
         forceUpdate = true;
@@ -63,6 +64,9 @@ public class XdUpdateAgent {
     }
 
     public void update(final Activity activity) {
+        if (!(activity instanceof ActivityLifecycleProvider)) {
+            throw new ClassCastException("Your activity must implement ActivityLifecycleProvider to prevent memory leak.");
+        }
         if (!forceUpdate) {
             if (!enabled) {
                 return;
@@ -77,88 +81,90 @@ public class XdUpdateAgent {
         if (iconResId == 0) {
             throw new NullPointerException("Please set iconResId.");
         }
-        new Thread(new Runnable() {
+        Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
-            public void run() {
-                URL url;
-                HttpURLConnection connection = null;
-                InputStream is = null;
-                String s = null;
+            public void call(Subscriber<? super Response> subscriber) {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(jsonUrl).build();
+                Response response;
                 try {
-                    url = new URL(jsonUrl);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-                    is = connection.getInputStream();
-                    s = XdUpdateUtils.toString(is);
-                    if (XdConstants.isDebugMode()) System.out.println(s);
-                } catch (IOException e) {
-                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
-                    return;
-                } finally {
-                    XdUpdateUtils.closeQuietly(is);
-                    if (connection != null) {
-                        connection.disconnect();
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        subscriber.onNext(response);
+                    } else {
+                        subscriber.onError(new IOException(response.code() + " : " + response.body().string()));
                     }
-                }
-                final XdUpdateBean xdUpdateBean = new XdUpdateBean();
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    xdUpdateBean.setVersionCode(jsonObject.getInt("versionCode"));
-                    xdUpdateBean.setSize(jsonObject.getInt("size"));
-                    xdUpdateBean.setVersionName(jsonObject.getString("versionName"));
-                    xdUpdateBean.setUrl(jsonObject.getString("url"));
-                    xdUpdateBean.setNote(jsonObject.getString("note"));
-                    xdUpdateBean.setMd5(jsonObject.getString("md5"));
-                } catch (JSONException e) {
-                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
-                    return;
-                }
-                final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
-                final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
-                if (currentName != null) {
-                    final int versionCode = xdUpdateBean.getVersionCode();
-                    final String versionName = xdUpdateBean.getVersionName();
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
-                                if (l != null) {
-                                    l.onUpdate(true, xdUpdateBean);
-                                }
-                                final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_MULTI_PROCESS);
-                                long lastIgnoredDayBegin = sp.getLong("time", 0);
-                                int lastIgnoredCode = sp.getInt("versionCode", 0);
-                                String lastIgnoredName = sp.getString("versionName", "");
-                                long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
-                                if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) {
-                                    return;
-                                }
-                                final File file = new File(activity.getExternalCacheDir(), "update.apk");
-                                boolean fileExists = false;
-                                if (file.exists()) {
-                                    if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
-                                        fileExists = true;
-                                    } else {
-                                        file.delete();
-                                    }
-                                }
-                                if (showNotification && !forceUpdate) {
-                                    showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
-                                } else {
-                                    showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
-                                }
-                            } else {
-                                if (l != null) {
-                                    l.onUpdate(false, xdUpdateBean);
-                                }
-                            }
-                            forceUpdate = false;
-                            uncancelable = false;
-                        }
-                    });
+                } catch (Throwable e) {
+                    subscriber.onError(e);
                 }
             }
-        }).start();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(((ActivityLifecycleProvider) activity).<Response>bindToLifecycle())
+                .subscribe(new Subscriber<Response>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        String responseBody;
+                        try {
+                            responseBody = response.body().string();
+                        } catch (Throwable e) {
+                            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                            return;
+                        }
+                        if (XdConstants.isDebugMode()) System.out.println(responseBody);
+                        final XdUpdateBean xdUpdateBean = new Gson().fromJson(responseBody, XdUpdateBean.class);
+                        if (XdConstants.isDebugMode() && xdUpdateBean == null) {
+                            System.out.println(responseBody);
+                            return;
+                        }
+                        final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
+                        final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
+                        if (currentName == null) return;
+                        final int versionCode = xdUpdateBean.getVersionCode();
+                        final String versionName = xdUpdateBean.getVersionName();
+                        if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
+                            if (l != null) {
+                                l.onUpdate(true, xdUpdateBean);
+                            }
+                            final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_MULTI_PROCESS);
+                            long lastIgnoredDayBegin = sp.getLong("time", 0);
+                            int lastIgnoredCode = sp.getInt("versionCode", 0);
+                            String lastIgnoredName = sp.getString("versionName", "");
+                            long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
+                            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) {
+                                return;
+                            }
+                            final File file = new File(activity.getExternalCacheDir(), "update.apk");
+                            boolean fileExists = false;
+                            if (file.exists()) {
+                                if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
+                                    fileExists = true;
+                                } else {
+                                    file.delete();
+                                }
+                            }
+                            if (showNotification && !forceUpdate) {
+                                showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+                            } else {
+                                showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+                            }
+                        } else if (l != null) {
+                            l.onUpdate(false, xdUpdateBean);
+                        }
+                        forceUpdate = false;
+                        uncancelable = false;
+                    }
+                });
     }
 
     protected void showNotification(final SharedPreferences sp, final File file, final boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
@@ -171,7 +177,7 @@ public class XdUpdateAgent {
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
+                sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).apply();
             }
         }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
         Notification.Builder builder = new Notification.Builder(activity)
@@ -194,7 +200,7 @@ public class XdUpdateAgent {
             builder.setNegativeButton(XdConstants.getLaterText(), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).commit();
+                    sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).apply();
                 }
             });
         }
@@ -308,5 +314,9 @@ public class XdUpdateAgent {
             updateAgent.l = mListener;
             return updateAgent;
         }
+    }
+
+    public interface OnUpdateListener {
+        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
     }
 }

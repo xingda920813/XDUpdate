@@ -18,8 +18,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by XingDa on 2016/04/24.
@@ -101,62 +106,78 @@ public class XdUpdateService extends Service {
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(),3,new Intent("com.xdandroid.xdupdate.DeleteUpdate"),PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        new Thread(new Runnable() {
+        Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
-            public void run() {
-                URL url;
-                HttpURLConnection connection = null;
-                InputStream is = null;
-                FileOutputStream fos = null;
+            public void call(Subscriber<? super Response> subscriber) {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(xdUpdateBean.getUrl()).build();
+                Response response;
                 try {
-                    url = new URL(xdUpdateBean.getUrl());
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-                    is = connection.getInputStream();
-                    fileLength = connection.getContentLength();
-                    file = new File(getExternalCacheDir(),"update.apk");
-                    if (file.exists()) {
-                        file.delete();
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        subscriber.onNext(response);
+                    } else {
+                        subscriber.onError(new IOException(response.code() + " : " + response.body().string()));
                     }
-                    fos = new FileOutputStream(file);
-                    byte[] buffer = new byte[8192];
-                    int hasRead;
-                    handler.sendEmptyMessage(TYPE_DOWNLOADING);
-                    interrupted = false;
-                    while ((hasRead = is.read(buffer)) > 0) {
-                        if (interrupted) {
-                            return;
-                        }
-                        fos.write(buffer, 0 , hasRead);
-                        length = length + hasRead;
-                    }
-                    handler.sendEmptyMessage(TYPE_FINISHED);
-                    length = 0;
-                    if (file.exists()) {
-                        if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
-                            Uri uri = Uri.fromFile(file);
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(uri, "application/vnd.android.package-archive");
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } else {
-                            file.delete();
-                        }
-                    }
-                } catch (IOException e) {
-                    if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
-                    sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
-                } finally {
-                    XdUpdateUtils.closeQuietly(fos);
-                    XdUpdateUtils.closeQuietly(is);
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                    stopSelf();
+                } catch (Throwable e) {
+                    subscriber.onError(e);
                 }
-
             }
-        }).start();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Subscriber<Response>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        InputStream is = null;
+                        FileOutputStream fos = null;
+                        try {
+                            is = response.body().byteStream();
+                            fileLength = (int) response.body().contentLength();
+                            file = new File(getExternalCacheDir(),"update.apk");
+                            if (file.exists()) file.delete();
+                            fos = new FileOutputStream(file);
+                            byte[] buffer = new byte[8192];
+                            int hasRead;
+                            handler.sendEmptyMessage(TYPE_DOWNLOADING);
+                            interrupted = false;
+                            while ((hasRead = is.read(buffer)) > 0) {
+                                if (interrupted) return;
+                                fos.write(buffer, 0 , hasRead);
+                                length = length + hasRead;
+                            }
+                            handler.sendEmptyMessage(TYPE_FINISHED);
+                            length = 0;
+                            if (file.exists()) {
+                                if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
+                                    Uri uri = Uri.fromFile(file);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                } else {
+                                    file.delete();
+                                }
+                            }
+                        } catch (Throwable e) {
+                            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                            sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
+                        } finally {
+                            XdUpdateUtils.closeQuietly(fos);
+                            XdUpdateUtils.closeQuietly(is);
+                            stopSelf();
+                        }
+                    }
+                });
         return START_NOT_STICKY;
     }
 
