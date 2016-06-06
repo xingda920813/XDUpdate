@@ -158,7 +158,9 @@ public class XdUpdateService extends Service {
                             handler.sendEmptyMessage(TYPE_FINISHED);
                             length = 0;
                             if (file.exists()) {
-                                if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
+                                String Md5JustDownloaded = XdUpdateUtils.getMd5ByFile(file);
+                                String Md5InUpdateBean = xdUpdateBean.getMd5();
+                                if (Md5JustDownloaded.equalsIgnoreCase(Md5InUpdateBean)) {
                                     Uri uri = Uri.fromFile(file);
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setDataAndType(uri, "application/vnd.android.package-archive");
@@ -166,6 +168,7 @@ public class XdUpdateService extends Service {
                                     startActivity(intent);
                                 } else {
                                     file.delete();
+                                    throw new Exception("Md5 dismatch. Md5JustDownloaded : " + Md5JustDownloaded + ". Md5InUpdateBean : " + Md5InUpdateBean + ".");
                                 }
                             }
                         } catch (Throwable e) {
