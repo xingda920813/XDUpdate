@@ -64,9 +64,6 @@ public class XdUpdateAgent {
     }
 
     public void update(final Activity activity) {
-        if (!(activity instanceof ActivityLifecycleProvider)) {
-            throw new ClassCastException("Your activity must implement ActivityLifecycleProvider to prevent memory leak.");
-        }
         if (!forceUpdate) {
             if (!enabled) {
                 return;
@@ -74,6 +71,9 @@ public class XdUpdateAgent {
             if (!XdUpdateUtils.isWifi(activity) && !allow4G) {
                 return;
             }
+        }
+        if (!(activity instanceof ActivityLifecycleProvider)) {
+            throw new ClassCastException("Your activity must implement ActivityLifecycleProvider to prevent memory leak.");
         }
         if (TextUtils.isEmpty(jsonUrl)) {
             throw new NullPointerException("Please set jsonUrl.");

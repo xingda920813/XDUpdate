@@ -60,12 +60,7 @@ public class XdUpdateService extends Service {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (hasMessages(TYPE_DOWNLOADING)) {
-                removeMessages(TYPE_DOWNLOADING);
-            }
-            if (hasMessages(TYPE_FINISHED)) {
-                removeMessages(TYPE_FINISHED);
-            }
+            removeCallbacksAndMessages(null);
             switch (msg.what) {
                 case TYPE_DOWNLOADING:
                     if (interrupted) {
