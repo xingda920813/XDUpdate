@@ -26,9 +26,9 @@ build.gradle中添加
 
 ## 2.添加二进制
 
-引入XDUpdate-1.1.0.jar或build.gradle中添加
+引入XDUpdate-1.1.1.jar或build.gradle中添加
 
-    compile 'com.xdandroid:xdupdate:1.1.0'
+    compile 'com.xdandroid:xdupdate:1.1.1'
 
 ## 3.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
