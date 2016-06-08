@@ -84,6 +84,10 @@ build.gradle中添加
 
     updateAgent.forceUpdateUncancelable(this);   
 
+#### 注意：为防止内存泄漏，传入的Activity必须实现ActivityLifecycleProvider接口，可通过继承RxAppCompatActivity来实现。详细请参考trello/RxLifecycle
+
+[https://github.com/trello/RxLifecycle](https://github.com/trello/RxLifecycle "trello/RxLifecycle")
+
 # 在线参数
 ## 1.准备参数文件
 建立JavaSE项目，先将键值对存放在Map中，然后将Map传入下面的writeObject方法，得到参数文件。
