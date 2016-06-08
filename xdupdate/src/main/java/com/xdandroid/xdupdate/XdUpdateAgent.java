@@ -60,8 +60,8 @@ public class XdUpdateAgent {
             } catch (Throwable ignored) {
             }
         }
-        if (subscription != null) subscription.unsubscribe();
         if (md5Subscription != null) md5Subscription.unsubscribe();
+        if (subscription != null) subscription.unsubscribe();
     }
 
     public void forceUpdate(final Activity activity) {
