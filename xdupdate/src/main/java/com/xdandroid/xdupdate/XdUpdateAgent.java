@@ -123,13 +123,9 @@ public class XdUpdateAgent {
                         }
                         if (XdConstants.isDebugMode()) System.out.println(responseBody);
                         final XdUpdateBean xdUpdateBean = new Gson().fromJson(responseBody, XdUpdateBean.class);
-                        if (XdConstants.isDebugMode() && xdUpdateBean == null) {
-                            System.out.println(responseBody);
-                            return;
-                        }
                         final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
                         final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
-                        if (currentName == null) return;
+                        if (xdUpdateBean == null || currentName == null) return;
                         final int versionCode = xdUpdateBean.getVersionCode();
                         final String versionName = xdUpdateBean.getVersionName();
                         if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
