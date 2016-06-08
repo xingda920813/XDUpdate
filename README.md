@@ -1,9 +1,7 @@
-# XDUpdate
+﻿# XDUpdate
 ### Android 自动更新/在线参数
 
 - JSON、APK、Map文件的URL需要支持外链，即可以被直接访问，可考虑放在Git仓库、OSS或自己的服务器上
-
-- 适用于Android 4.0以上版本(API Level 14以上)
 
 ![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_notification.png)
 
@@ -16,19 +14,19 @@
 
 build.gradle中添加
 
-	compile 'com.google.code.gson:gson:${latest.version}'
-    compile 'com.squareup.okhttp3:okhttp:${latest.version}'
-    compile 'com.squareup.okio:okio:${latest.version}'
-    compile 'io.reactivex:rxandroid:${latest.version}'
-    compile 'io.reactivex:rxjava:${latest.version}'
-    compile 'com.trello:rxlifecycle:${latest.version}'
-    compile 'com.trello:rxlifecycle-components:${latest.version}'
+	compile 'com.google.code.gson:gson:+'
+    compile 'com.squareup.okhttp3:okhttp:+'
+    compile 'com.squareup.okio:okio:+'
+    compile 'io.reactivex:rxandroid:+'
+    compile 'io.reactivex:rxjava:+'
+    compile 'com.trello:rxlifecycle:+'
+    compile 'com.trello:rxlifecycle-components:+'
 
 ## 2.添加二进制
 
 引入XDUpdate-1.1.1.jar或build.gradle中添加
 
-    compile 'com.xdandroid:xdupdate:1.1.1'
+    compile 'com.xdandroid:xdupdate:+'
 
 ## 3.AndroidManifest.xml中添加：
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
