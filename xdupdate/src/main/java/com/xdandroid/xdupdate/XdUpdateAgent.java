@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.trello.rxlifecycle.ActivityLifecycleProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +25,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -35,7 +35,6 @@ import rx.schedulers.Schedulers;
 public class XdUpdateAgent {
 
     protected XdUpdateAgent() {
-
     }
 
     protected boolean forceUpdate = false;
@@ -46,11 +45,23 @@ public class XdUpdateAgent {
     protected int iconResId;
     protected boolean showNotification;
     protected OnUpdateListener l;
+    protected Subscription md5Subscription, subscription;
 
     protected AlertDialog dialog;
 
     public AlertDialog getDialog() {
         return dialog;
+    }
+
+    public void onDestroy() {
+        if (dialog != null) {
+            try {
+                dialog.dismiss();
+            } catch (Throwable ignored) {
+            }
+        }
+        if (subscription != null) subscription.unsubscribe();
+        if (md5Subscription != null) md5Subscription.unsubscribe();
     }
 
     public void forceUpdate(final Activity activity) {
@@ -65,23 +76,12 @@ public class XdUpdateAgent {
 
     public void update(final Activity activity) {
         if (!forceUpdate) {
-            if (!enabled) {
-                return;
-            }
-            if (!XdUpdateUtils.isWifi(activity) && !allow4G) {
-                return;
-            }
+            if (!enabled) return;
+            if (!XdUpdateUtils.isWifi(activity) && !allow4G) return;
         }
-        if (!(activity instanceof ActivityLifecycleProvider)) {
-            throw new ClassCastException("Your activity must implement ActivityLifecycleProvider to prevent memory leak.");
-        }
-        if (TextUtils.isEmpty(jsonUrl)) {
-            throw new NullPointerException("Please set jsonUrl.");
-        }
-        if (iconResId == 0) {
-            throw new NullPointerException("Please set iconResId.");
-        }
-        Observable.create(new Observable.OnSubscribe<Response>() {
+        if (TextUtils.isEmpty(jsonUrl)) throw new NullPointerException("Please set jsonUrl.");
+        if (iconResId == 0) throw new NullPointerException("Please set iconResId.");
+        subscription = Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
                 OkHttpClient client = new OkHttpClient();
@@ -100,11 +100,9 @@ public class XdUpdateAgent {
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(((ActivityLifecycleProvider) activity).<Response>bindToLifecycle())
                 .subscribe(new Subscriber<Response>() {
-                    @Override
-                    public void onCompleted() {
 
+                    public void onCompleted() {
                     }
 
                     @Override
@@ -129,33 +127,49 @@ public class XdUpdateAgent {
                         final int versionCode = xdUpdateBean.getVersionCode();
                         final String versionName = xdUpdateBean.getVersionName();
                         if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
-                            if (l != null) {
-                                l.onUpdate(true, xdUpdateBean);
-                            }
+                            if (l != null) l.onUpdate(true, xdUpdateBean);
                             final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_MULTI_PROCESS);
                             long lastIgnoredDayBegin = sp.getLong("time", 0);
                             int lastIgnoredCode = sp.getInt("versionCode", 0);
                             String lastIgnoredName = sp.getString("versionName", "");
                             long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
-                            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) {
+                            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName))
                                 return;
-                            }
                             final File file = new File(activity.getExternalCacheDir(), "update.apk");
-                            boolean fileExists = false;
                             if (file.exists()) {
-                                if (XdUpdateUtils.getMd5ByFile(file).equalsIgnoreCase(xdUpdateBean.getMd5())) {
-                                    fileExists = true;
-                                } else {
-                                    file.delete();
-                                }
-                            }
-                            if (showNotification && !forceUpdate) {
-                                showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+                                md5Subscription = XdUpdateUtils.getMd5ByFile(file, new Subscriber<String>() {
+
+                                    boolean fileExists = false;
+
+                                    public void onCompleted() {
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        file.delete();
+                                        if (XdConstants.isDebugMode())
+                                            e.printStackTrace(System.err);
+                                        proceedToUI(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+                                    }
+
+                                    @Override
+                                    public void onNext(String Md5JustDownloaded) {
+                                        String Md5InUpdateBean = xdUpdateBean.getMd5();
+                                        if (Md5JustDownloaded.equalsIgnoreCase(Md5InUpdateBean)) {
+                                            fileExists = true;
+                                        } else {
+                                            file.delete();
+                                            if (XdConstants.isDebugMode())
+                                                System.err.println("Md5 dismatch. Md5JustDownloaded : " + Md5JustDownloaded + ". Md5InUpdateBean : " + Md5InUpdateBean + ".");
+                                        }
+                                        proceedToUI(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+                                    }
+                                });
                             } else {
-                                showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+                                proceedToUI(sp, file, false, activity, versionName, xdUpdateBean, versionCode);
                             }
-                        } else if (l != null) {
-                            l.onUpdate(false, xdUpdateBean);
+                        } else {
+                            if (l != null) l.onUpdate(false, xdUpdateBean);
                         }
                         forceUpdate = false;
                         uncancelable = false;
@@ -163,15 +177,21 @@ public class XdUpdateAgent {
                 });
     }
 
+    private void proceedToUI(SharedPreferences sp, File file, boolean fileExists, Activity activity, String versionName, XdUpdateBean xdUpdateBean, int versionCode) {
+        if (showNotification && !forceUpdate) {
+            showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+        } else {
+            showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+        }
+    }
+
     protected void showNotification(final SharedPreferences sp, final File file, final boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
-            @Override
             public void onReceive(Context context, Intent intent) {
                 showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
             }
         }, new IntentFilter("com.xdandroid.xdupdate.UpdateDialog"));
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
-            @Override
             public void onReceive(Context context, Intent intent) {
                 sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).apply();
             }
@@ -194,7 +214,6 @@ public class XdUpdateAgent {
                 .setMessage(xdUpdateBean.getNote());
         if (!uncancelable) {
             builder.setNegativeButton(XdConstants.getLaterText(), new DialogInterface.OnClickListener() {
-                @Override
                 public void onClick(DialogInterface dialog, int which) {
                     sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).apply();
                 }
@@ -202,7 +221,6 @@ public class XdUpdateAgent {
         }
         if (fileExists) {
             builder.setPositiveButton(XdConstants.getInstallText(), new DialogInterface.OnClickListener() {
-                @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Uri uri = Uri.fromFile(file);
                     Intent intent = new Intent(Intent.ACTION_VIEW);

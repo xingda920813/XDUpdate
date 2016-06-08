@@ -7,8 +7,8 @@ import java.io.Serializable;
  */
 public class XdUpdateBean implements Serializable {
 
-    protected int versionCode,size;
-    protected String versionName,url,note,md5;
+    protected int versionCode, size;
+    protected String versionName, url, note, md5;
 
     public String getMd5() {
         return md5;

@@ -24,6 +24,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -38,6 +39,7 @@ public class XdUpdateService extends Service {
     protected DeleteReceiver deleteReceiver;
     protected File file;
     protected volatile boolean interrupted;
+    protected Subscription subscription;
 
     protected static final int TYPE_FINISHED = 0;
     protected static final int TYPE_DOWNLOADING = 1;
@@ -48,9 +50,7 @@ public class XdUpdateService extends Service {
             interrupted = true;
             handler.sendEmptyMessage(TYPE_FINISHED);
             manager.cancel(2);
-            if (file != null && file.exists()) {
-                file.delete();
-            }
+            if (file != null && file.exists()) file.delete();
             stopSelf();
         }
     }
@@ -66,7 +66,7 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length)+"M/"+ XdUpdateUtils.formatToMegaBytes(fileLength)+"M").setProgress(fileLength, length, false).getNotification());
+                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).getNotification());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 512);
                     }
                     break;
@@ -91,17 +91,17 @@ public class XdUpdateService extends Service {
             return START_NOT_STICKY;
         }
         deleteReceiver = new DeleteReceiver();
-        getApplicationContext().registerReceiver(deleteReceiver,new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
+        getApplicationContext().registerReceiver(deleteReceiver, new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
         builder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
-                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.getDownloadingText())
+                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.getVersionName() + XdConstants.getDownloadingText())
                 .setSmallIcon(iconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext())+ xdUpdateBean.getVersionName()+ XdConstants.getDownloadingText() +"...")
+                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.getVersionName() + XdConstants.getDownloadingText() + "...")
                 .setContentText("")
-                .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(),3,new Intent("com.xdandroid.xdupdate.DeleteUpdate"),PendingIntent.FLAG_CANCEL_CURRENT));
+                .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Observable.create(new Observable.OnSubscribe<Response>() {
+        subscription = Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
                 OkHttpClient client = new OkHttpClient();
@@ -121,9 +121,8 @@ public class XdUpdateService extends Service {
         }).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Subscriber<Response>() {
-                    @Override
-                    public void onCompleted() {
 
+                    public void onCompleted() {
                     }
 
                     @Override
@@ -138,7 +137,7 @@ public class XdUpdateService extends Service {
                         try {
                             is = response.body().byteStream();
                             fileLength = (int) response.body().contentLength();
-                            file = new File(getExternalCacheDir(),"update.apk");
+                            file = new File(getExternalCacheDir(), "update.apk");
                             if (file.exists()) file.delete();
                             fos = new FileOutputStream(file);
                             byte[] buffer = new byte[8192];
@@ -147,7 +146,7 @@ public class XdUpdateService extends Service {
                             interrupted = false;
                             while ((hasRead = is.read(buffer)) > 0) {
                                 if (interrupted) return;
-                                fos.write(buffer, 0 , hasRead);
+                                fos.write(buffer, 0, hasRead);
                                 length = length + hasRead;
                             }
                             handler.sendEmptyMessage(TYPE_FINISHED);
@@ -182,8 +181,7 @@ public class XdUpdateService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (deleteReceiver != null) {
-            getApplicationContext().unregisterReceiver(deleteReceiver);
-        }
+        if (deleteReceiver != null) getApplicationContext().unregisterReceiver(deleteReceiver);
+        if (subscription != null) subscription.unsubscribe();
     }
 }

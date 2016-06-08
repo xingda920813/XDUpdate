@@ -12,6 +12,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -20,12 +21,21 @@ import rx.schedulers.Schedulers;
  */
 public class XdOnlineConfig {
 
+    protected XdOnlineConfig() {
+    }
+
     protected String mapUrl;
     protected boolean enabled;
     protected OnConfigAcquiredListener l;
+    protected Subscription subscription;
+
+    public void onDestroy() {
+        if (subscription != null) subscription.unsubscribe();
+    }
 
     public interface OnConfigAcquiredListener {
         public void onConfigAcquired(Map<Serializable, Serializable> map);
+
         public void onFailure(Throwable e);
     }
 
@@ -33,7 +43,7 @@ public class XdOnlineConfig {
         if (!enabled) return;
         if (TextUtils.isEmpty(mapUrl)) throw new NullPointerException("Please set mapUrl.");
         if (l == null) throw new NullPointerException("Please set onConfigAcquiredListener.");
-        Observable.create(new Observable.OnSubscribe<Map<Serializable, Serializable>>() {
+        subscription = Observable.create(new Observable.OnSubscribe<Map<Serializable, Serializable>>() {
             @Override
             public void call(Subscriber<? super Map<Serializable, Serializable>> subscriber) {
                 OkHttpClient client = new OkHttpClient();
@@ -59,9 +69,8 @@ public class XdOnlineConfig {
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Map<Serializable, Serializable>>() {
-                    @Override
-                    public void onCompleted() {
 
+                    public void onCompleted() {
                     }
 
                     @Override

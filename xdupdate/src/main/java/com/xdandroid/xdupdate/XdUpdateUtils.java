@@ -23,17 +23,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by XingDa on 2016/04/24.
  */
 public class XdUpdateUtils {
+
+    protected XdUpdateUtils() {
+    }
 
     public static void closeQuietly(Closeable c) {
         if (c != null) {
             try {
                 c.close();
             } catch (Throwable ignored) {
-
             }
         }
     }
@@ -52,27 +60,48 @@ public class XdUpdateUtils {
         double megaBytes = bytes / 1048576.0;
         if (megaBytes < 1) {
             return new DecimalFormat("0.0").format(megaBytes);
-        } else {
-            return new DecimalFormat("#.0").format(megaBytes);
         }
+        return new DecimalFormat("#.0").format(megaBytes);
+    }
+
+    public static Subscription getMd5ByFile(final File file, Subscriber<String> md5Subscriber) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    MappedByteBuffer byteBuffer = fis.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+                    MessageDigest md5 = MessageDigest.getInstance("MD5");
+                    md5.update(byteBuffer);
+                    BigInteger bi = new BigInteger(1, md5.digest());
+                    subscriber.onNext(bi.toString(16));
+                } catch (Throwable e) {
+                    subscriber.onError(e);
+                } finally {
+                    closeQuietly(fis);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(md5Subscriber);
     }
 
     public static String getMd5ByFile(File file) {
-        String value = "";
-        FileInputStream is = null;
+        FileInputStream fis = null;
         try {
-            is = new FileInputStream(file);
-            MappedByteBuffer byteBuffer = is.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+            fis = new FileInputStream(file);
+            MappedByteBuffer byteBuffer = fis.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(byteBuffer);
             BigInteger bi = new BigInteger(1, md5.digest());
-            value = bi.toString(16);
+            return bi.toString(16);
         } catch (Throwable e) {
             if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+            return "";
         } finally {
-            closeQuietly(is);
+            closeQuietly(fis);
         }
-        return value;
     }
 
     public static String getApplicationName(Context app) {
@@ -119,12 +148,10 @@ public class XdUpdateUtils {
         return networkInfo != null && networkInfo.isConnected() && (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET || networkInfo.getType() == 17 || networkInfo.getType() == -1 || networkInfo.getType() == 13 || networkInfo.getType() == 16);
     }
 
-    public static Map<Serializable,Serializable> toMap(InputStream is) throws IOException,ClassNotFoundException,NullPointerException {
-        if (is == null) {
-            throw new NullPointerException("inputStream == null");
-        }
+    public static Map<Serializable, Serializable> toMap(InputStream is) throws IOException, ClassNotFoundException, NullPointerException {
+        if (is == null) throw new NullPointerException("inputStream == null");
         ObjectInputStream ois = new ObjectInputStream(is);
-        @SuppressWarnings("unchecked") Map<Serializable,Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
+        @SuppressWarnings("unchecked") Map<Serializable, Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
         closeQuietly(ois);
         return map;
     }

@@ -1,4 +1,4 @@
-﻿# XDUpdate
+# XDUpdate
 ### Android 自动更新/在线参数
 
 - JSON、APK、Map文件的URL需要支持外链，即可以被直接访问，可考虑放在Git仓库、OSS或自己的服务器上
@@ -19,12 +19,10 @@ build.gradle中添加
     compile 'com.squareup.okio:okio:+'
     compile 'io.reactivex:rxandroid:+'
     compile 'io.reactivex:rxjava:+'
-    compile 'com.trello:rxlifecycle:+'
-    compile 'com.trello:rxlifecycle-components:+'
 
 ## 2.添加二进制
 
-引入XDUpdate-1.1.1.jar或build.gradle中添加
+引入XDUpdate-1.1.2.jar或build.gradle中添加
 
     compile 'com.xdandroid:xdupdate:+'
 
@@ -82,16 +80,16 @@ build.gradle中添加
 
     updateAgent.forceUpdateUncancelable(this);   
 
-#### 注意：为防止内存泄漏，传入的Activity必须实现ActivityLifecycleProvider接口，可通过继承RxAppCompatActivity来实现。详细请参考trello/RxLifecycle
+#### 注意：为了防止内存泄漏，需要在Activity的onDestroy()方法中调用updateAgent.onDestroy().
 
-[https://github.com/trello/RxLifecycle](https://github.com/trello/RxLifecycle "trello/RxLifecycle")
+#### 可通过updateAgent.getDialog()得到更新提示框的AlertDialog.
 
 # 在线参数
 ## 1.准备参数文件
 建立JavaSE项目，先将键值对存放在Map中，然后将Map传入下面的writeObject方法，得到参数文件。
 
     public static void writeObject(Map<Serializable,Serializable> map) throws IOException {
-        File file = new File("C:\\Desktop\\map.obj");       //指定文件生成路径
+        File file = new File("C:\\Users\\${user-account-name}\\Desktop\\map.obj");       //指定文件生成路径
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
         oos.writeObject(map);
         oos.close();
@@ -105,8 +103,10 @@ build.gradle中添加
                         public void onConfigAcquired(Map<Serializable, Serializable> map) {     //主线程回调，可执行UI操作
                             System.out.println(map);            //成功，传入Map
                         }    
-                        public void onFailure(Exception e) {
-                            e.printStackTrace();                //失败，传入Exception
+                        public void onFailure(Throwable e) {
+                            e.printStackTrace();                //失败，传入Throwable
                         }                           
                     }).build();
     onlineConfig.getOnlineConfig();
+
+#### 注意：为了防止内存泄漏，需要在Context(Activity/Service/Receiver/Provider/Application)/Fragment的onDestroy()方法中调用onlineConfig.onDestroy().
