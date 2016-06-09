@@ -63,20 +63,20 @@ build.gradle中添加
                 .setDownloadingText("正在下载")
                 .build();
 
-## 3.检查更新(Activity内)
-适用于入口Activity的自动检查更新。默认策略下，若用户选择“以后再说”或者划掉了通知栏的更新提示，则**当天**对**该版本**不再提示更新，以防用户每次打开应用时都提示，不胜其烦。  
+## 3.检查更新
+适用于App入口的自动检查更新。默认策略下，若用户选择“以后再说”或者划掉了通知栏的更新提示，则**当天**对**该版本**不再提示更新，以防用户每次打开应用时都提示，不胜其烦。  
 
-    updateAgent.update(this); 
+    updateAgent.update(getActivity()); 
     
 适用于应用“设置”页面的手动检查更新。此方法无视是否允许使用运营商网络和上面的默认策略，强制检查更新，有更新时直接弹出提示框。     
 
-    updateAgent.forceUpdate(this);   
+    updateAgent.forceUpdate(getActivity());   
 
 弹出的更新对话框中只有“立即更新”按钮，没有“以后再说”，且不能取消对话框。用户体验不好，不推荐使用。     
 
-    updateAgent.forceUpdateUncancelable(this);   
+    updateAgent.forceUpdateUncancelable(getActivity());   
 
-#### 注意：为了防止内存泄漏，需要在Activity的onDestroy()方法中调用updateAgent.onDestroy().
+#### 为防止内存泄漏，需调用updateAgent.onDestroy().
 
 #### 可通过updateAgent.getDialog()得到更新提示框的AlertDialog.
 
@@ -105,4 +105,4 @@ build.gradle中添加
                     }).build();
     onlineConfig.getOnlineConfig();
 
-#### 注意：为了防止内存泄漏，需要在Context(Activity/Service/Receiver/Provider/Application)/Fragment的onDestroy()方法中调用onlineConfig.onDestroy().
+#### 为防止内存泄漏，需调用onlineConfig.onDestroy().
