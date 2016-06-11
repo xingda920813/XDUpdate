@@ -97,7 +97,7 @@ public class XdUpdateUtils {
             BigInteger bi = new BigInteger(1, md5.digest());
             return bi.toString(16);
         } catch (Throwable e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+            if (XdConstants.isDebugMode()) e.printStackTrace();
             return "";
         } finally {
             closeQuietly(fis);
@@ -112,7 +112,7 @@ public class XdUpdateUtils {
             applicationInfo = packageManager.getApplicationInfo(app.getPackageName(), 0);
             return (String) packageManager.getApplicationLabel(applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+            if (XdConstants.isDebugMode()) e.printStackTrace();
             return "";
         }
     }
@@ -125,7 +125,7 @@ public class XdUpdateUtils {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionCode = info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+            if (XdConstants.isDebugMode()) e.printStackTrace();
         }
         return versionCode;
     }
@@ -138,7 +138,7 @@ public class XdUpdateUtils {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionName = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+            if (XdConstants.isDebugMode()) e.printStackTrace();
         }
         return versionName;
     }
@@ -148,10 +148,11 @@ public class XdUpdateUtils {
         return networkInfo != null && networkInfo.isConnected() && (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET || networkInfo.getType() == 17 || networkInfo.getType() == -1 || networkInfo.getType() == 13 || networkInfo.getType() == 16);
     }
 
+    @SuppressWarnings("unchecked")
     public static Map<Serializable, Serializable> toMap(InputStream is) throws IOException, ClassNotFoundException, NullPointerException {
         if (is == null) throw new NullPointerException("inputStream == null");
         ObjectInputStream ois = new ObjectInputStream(is);
-        @SuppressWarnings("unchecked") Map<Serializable, Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
+        Map<Serializable, Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
         closeQuietly(ois);
         return map;
     }

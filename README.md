@@ -23,23 +23,26 @@ build.gradle中添加
     compile 'io.reactivex:rxjava:+'
 
 ## 2.AndroidManifest.xml中添加：
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>    //下载的APK文件存放在大容量存储上
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>      //判断是否是Wifi
-    <uses-permission android:name="android.permission.INTERNET"/>                  //连接网络检查更新、下载APK
+	
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+	<!--若应用除了自动更新以外，也需要用到 WRITE_EXTERNAL_STORAGE 权限，则上面的一行不要加 android:maxSdkVersion="18".-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+	<!--在线参数只需要 INTERNET 权限即可，其他的权限和Service都不需要.-->
 
     <application>
-    <service android:name="com.xdandroid.xdupdate.XdUpdateService"/>               //APK下载服务
+    <service android:name="com.xdandroid.xdupdate.XdUpdateService"/>
     </application>
     
 # 自动更新
 ## 1.准备描述更新信息的JSON文件
     {
-    "versionCode":4,                            //新版本的versionCode,int型
-    "versionName":"1.12",                       //新版本的versionName,String型
-    "url":"http://contoso.com/app.apk",         //APK下载地址,String型
-    "note":"Bug修复",                           //更新内容,String型
-    "md5":"D23788B6A1F95C8B6F7E442D6CA7536C",   //32位MD5值,String型
-    "size":17962350                             //大小(字节),int型
+    "versionCode":4,                          //新版本的versionCode,int型
+    "versionName":"1.12",                     //新版本的versionName,String型
+    "url":"http://contoso.com/app.apk",       //APK下载地址,String型
+    "note":"Bug修复",                         //更新内容,String型
+    "md5":"D23788B6A1F95C8B6F7E442D6CA7536C", //32位MD5值,String型
+    "size":17962350                           //大小(字节),int型
     }
 
 ## 2.构建XdUpdateAgent对象
@@ -50,9 +53,9 @@ build.gradle中添加
                 .setShowNotification(true)                    
                 //使用通知提示用户有更新，用户点击通知后弹出提示框，而不是检测到更新直接弹框(默认:true，仅对非强制检查更新有效)
                 .setIconResId(R.mipmap.ic_launcher)           //设置在通知栏显示的通知图标资源ID(必须指定，一般为应用图标)
-                .setOnUpdateListener(new XdUpdateAgent.OnUpdateListener() {     //取得更新信息JSON后的回调(可选指定)
-                        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {    //主线程回调，可执行UI操作
-                            //needUpdate为是否需要更新，updateBean为JSON对应的数据结构
+                .setOnUpdateListener(new XdUpdateAgent.OnUpdateListener() {
+						//取得更新信息JSON后的回调(可选)，回调在主线程，可执行UI操作，updateBean为JSON对应的数据结构  
+                        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {
                             if (!needUpdate) Toast.makeText(context,"您的应用为最新版本",Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -85,7 +88,7 @@ build.gradle中添加
 建立JavaSE项目，先将键值对存放在Map中，然后将Map传入下面的writeObject方法，得到参数文件。
 
     public static void writeObject(Map<Serializable,Serializable> map) throws IOException {
-        File file = new File("C:\\Users\\${user-account-name}\\Desktop\\map.obj");       //指定文件生成路径
+        File file = new File("C:\\Users\\${user-account-name}\\Desktop\\map.obj");     //指定文件生成路径
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
         oos.writeObject(map);
         oos.close();
@@ -93,14 +96,16 @@ build.gradle中添加
 
 ## 2.得到在线参数
     XdOnlineConfig onlineConfig = new XdOnlineConfig.Builder()
-                    .setDebugMode(false)                        //是否显示调试信息(默认:false)
-                    .setMapUrl("http://contoso.com/map.obj")    //参数文件的URL
+                    .setDebugMode(false)                         //是否显示调试信息(默认:false)
+                    .setMapUrl("http://contoso.com/map.obj")     //参数文件的URL
                     .setOnConfigAcquiredListener(new XdOnlineConfig.OnConfigAcquiredListener() {
-                        public void onConfigAcquired(Map<Serializable, Serializable> map) {     //主线程回调，可执行UI操作
-                            System.out.println(map);            //成功，传入Map
-                        }    
+						//主线程回调，可执行UI操作
+                        public void onConfigAcquired(Map<Serializable, Serializable> map) {     
+                            System.out.println(map);             //成功，传入Map
+                        }
+
                         public void onFailure(Throwable e) {
-                            e.printStackTrace();                //失败，传入Throwable
+                            e.printStackTrace();                 //失败，传入Throwable
                         }                           
                     }).build();
     onlineConfig.getOnlineConfig();

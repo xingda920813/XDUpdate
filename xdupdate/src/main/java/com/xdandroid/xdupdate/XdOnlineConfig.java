@@ -75,7 +75,7 @@ public class XdOnlineConfig {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                        if (XdConstants.isDebugMode()) e.printStackTrace();
                         l.onFailure(e);
                     }
 

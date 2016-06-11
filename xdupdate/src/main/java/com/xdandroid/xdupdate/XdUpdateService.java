@@ -66,7 +66,7 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).getNotification());
+                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 512);
                     }
                     break;
@@ -127,7 +127,7 @@ public class XdUpdateService extends Service {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                        if (XdConstants.isDebugMode()) e.printStackTrace();
                     }
 
                     @Override
@@ -166,7 +166,7 @@ public class XdUpdateService extends Service {
                                 }
                             }
                         } catch (Throwable e) {
-                            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                            if (XdConstants.isDebugMode()) e.printStackTrace();
                             sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
                         } finally {
                             XdUpdateUtils.closeQuietly(fos);

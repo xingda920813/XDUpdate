@@ -107,7 +107,7 @@ public class XdUpdateAgent {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                        if (XdConstants.isDebugMode()) e.printStackTrace();
                     }
 
                     @Override
@@ -116,7 +116,7 @@ public class XdUpdateAgent {
                         try {
                             responseBody = response.body().string();
                         } catch (Throwable e) {
-                            if (XdConstants.isDebugMode()) e.printStackTrace(System.err);
+                            if (XdConstants.isDebugMode()) e.printStackTrace();
                             return;
                         }
                         if (XdConstants.isDebugMode()) System.out.println(responseBody);
@@ -128,7 +128,7 @@ public class XdUpdateAgent {
                         final String versionName = xdUpdateBean.getVersionName();
                         if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
                             if (l != null) l.onUpdate(true, xdUpdateBean);
-                            final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_MULTI_PROCESS);
+                            final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_PRIVATE);
                             long lastIgnoredDayBegin = sp.getLong("time", 0);
                             int lastIgnoredCode = sp.getInt("versionCode", 0);
                             String lastIgnoredName = sp.getString("versionName", "");
@@ -148,7 +148,7 @@ public class XdUpdateAgent {
                                     public void onError(Throwable e) {
                                         file.delete();
                                         if (XdConstants.isDebugMode())
-                                            e.printStackTrace(System.err);
+                                            e.printStackTrace();
                                         proceedToUI(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
                                     }
 
@@ -205,7 +205,7 @@ public class XdUpdateAgent {
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
         NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(1, builder.getNotification());
+        manager.notify(1, builder.build());
     }
 
     protected void showAlertDialog(final SharedPreferences sp, final File file, boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
