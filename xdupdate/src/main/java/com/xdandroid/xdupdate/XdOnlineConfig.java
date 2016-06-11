@@ -23,11 +23,15 @@ public class XdOnlineConfig {
 
     protected XdOnlineConfig() {
     }
-
+    protected static XdOnlineConfig instance;
     protected String mapUrl;
-    protected boolean enabled;
     protected OnConfigAcquiredListener l;
     protected Subscription subscription;
+
+    public XdOnlineConfig setMapUrl(String mapUrl) {
+        instance.mapUrl = mapUrl;
+        return instance;
+    }
 
     public void onDestroy() {
         if (subscription != null) subscription.unsubscribe();
@@ -40,7 +44,6 @@ public class XdOnlineConfig {
     }
 
     public void getOnlineConfig() {
-        if (!enabled) return;
         if (TextUtils.isEmpty(mapUrl)) throw new NullPointerException("Please set mapUrl.");
         if (l == null) throw new NullPointerException("Please set onConfigAcquiredListener.");
         subscription = Observable.create(new Observable.OnSubscribe<Map<Serializable, Serializable>>() {
@@ -89,16 +92,10 @@ public class XdOnlineConfig {
     public static class Builder {
 
         protected String mMapUrl = "";
-        protected boolean mEnabled = true;
         protected OnConfigAcquiredListener mListener = null;
 
         public Builder setMapUrl(String mapUrl) {
             mMapUrl = mapUrl;
-            return this;
-        }
-
-        public Builder setEnabled(boolean enabled) {
-            mEnabled = enabled;
             return this;
         }
 
@@ -113,11 +110,10 @@ public class XdOnlineConfig {
         }
 
         public XdOnlineConfig build() {
-            XdOnlineConfig onlineConfig = new XdOnlineConfig();
-            onlineConfig.mapUrl = mMapUrl;
-            onlineConfig.enabled = mEnabled;
-            onlineConfig.l = mListener;
-            return onlineConfig;
+            if (instance == null) instance = new XdOnlineConfig();
+            instance.mapUrl = mMapUrl;
+            instance.l = mListener;
+            return instance;
         }
     }
 }

@@ -36,21 +36,25 @@ public class XdUpdateAgent {
 
     protected XdUpdateAgent() {
     }
+    protected static XdUpdateAgent instance;
 
     protected boolean forceUpdate = false;
     protected boolean uncancelable = false;
     protected boolean allow4G;
     protected String jsonUrl;
-    protected boolean enabled;
     protected int iconResId;
     protected boolean showNotification;
     protected OnUpdateListener l;
     protected Subscription md5Subscription, subscription;
-
     protected AlertDialog dialog;
 
     public AlertDialog getDialog() {
         return dialog;
+    }
+
+    public XdUpdateAgent setJsonUrl(String jsonUrl) {
+        instance.jsonUrl = jsonUrl;
+        return instance;
     }
 
     public void onDestroy() {
@@ -64,21 +68,18 @@ public class XdUpdateAgent {
         if (subscription != null) subscription.unsubscribe();
     }
 
-    public void forceUpdate(final Activity activity) {
+    public void forceUpdate(Activity activity) {
         forceUpdate = true;
         update(activity);
     }
 
-    public void forceUpdateUncancelable(final Activity activity) {
+    public void forceUpdateUncancelable(Activity activity) {
         uncancelable = true;
         forceUpdate(activity);
     }
 
     public void update(final Activity activity) {
-        if (!forceUpdate) {
-            if (!enabled) return;
-            if (!XdUpdateUtils.isWifi(activity) && !allow4G) return;
-        }
+        if (!forceUpdate && !allow4G && !XdUpdateUtils.isWifi(activity)) return;
         if (TextUtils.isEmpty(jsonUrl)) throw new NullPointerException("Please set jsonUrl.");
         if (iconResId == 0) throw new NullPointerException("Please set iconResId.");
         subscription = Observable.create(new Observable.OnSubscribe<Response>() {
@@ -248,7 +249,6 @@ public class XdUpdateAgent {
 
         protected String mJsonUrl = "";
         protected boolean mAllow4G = false;
-        protected boolean mEnabled = true;
         protected int mIconResId = 0;
         protected boolean mShowNotification = true;
         protected OnUpdateListener mListener = null;
@@ -260,11 +260,6 @@ public class XdUpdateAgent {
 
         public Builder setAllow4G(boolean allow4G) {
             mAllow4G = allow4G;
-            return this;
-        }
-
-        public Builder setEnabled(boolean enabled) {
-            mEnabled = enabled;
             return this;
         }
 
@@ -319,14 +314,13 @@ public class XdUpdateAgent {
         }
 
         public XdUpdateAgent build() {
-            XdUpdateAgent updateAgent = new XdUpdateAgent();
-            updateAgent.jsonUrl = mJsonUrl;
-            updateAgent.allow4G = mAllow4G;
-            updateAgent.enabled = mEnabled;
-            updateAgent.iconResId = mIconResId;
-            updateAgent.showNotification = mShowNotification;
-            updateAgent.l = mListener;
-            return updateAgent;
+            if (instance == null) instance = new XdUpdateAgent();
+            instance.jsonUrl = mJsonUrl;
+            instance.allow4G = mAllow4G;
+            instance.iconResId = mIconResId;
+            instance.showNotification = mShowNotification;
+            instance.l = mListener;
+            return instance;
         }
     }
 

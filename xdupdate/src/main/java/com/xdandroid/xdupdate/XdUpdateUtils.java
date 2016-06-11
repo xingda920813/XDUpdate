@@ -46,7 +46,7 @@ public class XdUpdateUtils {
         }
     }
 
-    public static Date dayBegin(final Date date) {
+    public static Date dayBegin(Date date) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.set(Calendar.HOUR_OF_DAY, 0);
@@ -149,7 +149,7 @@ public class XdUpdateUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static Map<Serializable, Serializable> toMap(InputStream is) throws IOException, ClassNotFoundException, NullPointerException {
+    public static Map<Serializable, Serializable> toMap(InputStream is) throws IOException, ClassNotFoundException {
         if (is == null) throw new NullPointerException("inputStream == null");
         ObjectInputStream ois = new ObjectInputStream(is);
         Map<Serializable, Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
