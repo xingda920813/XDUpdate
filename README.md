@@ -24,12 +24,11 @@ build.gradle中添加
 
 ## 2.AndroidManifest.xml中添加：
 	
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
-	<!--若应用除了自动更新以外，也需要用到 WRITE_EXTERNAL_STORAGE 权限，则上面的一行不要加 android:maxSdkVersion="18".-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--在线参数只需要 INTERNET 权限即可，其他的权限和Service都不需要.-->
     <uses-permission android:name="android.permission.INTERNET"/>
-	<!--在线参数只需要 INTERNET 权限即可，其他的权限和Service都不需要.-->
-
+	
     <application>
     <service android:name="com.xdandroid.xdupdate.XdUpdateService"/>
     </application>

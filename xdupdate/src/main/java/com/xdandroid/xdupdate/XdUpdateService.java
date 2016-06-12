@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -66,7 +67,9 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
+                        }
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 500);
                     }
                     break;
