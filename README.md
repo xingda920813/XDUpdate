@@ -14,7 +14,6 @@
 build.gradle中添加
 
 	compile 'com.xdandroid:xdupdate:+'
-	compile 'com.google.code.gson:gson:+'
     compile 'com.squareup.okhttp3:okhttp:+'
     compile 'com.squareup.okio:okio:+'
     compile 'io.reactivex:rxandroid:+'

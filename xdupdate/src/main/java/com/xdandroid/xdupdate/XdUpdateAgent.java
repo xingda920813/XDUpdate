@@ -15,7 +15,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,10 +123,21 @@ public class XdUpdateAgent {
                             return;
                         }
                         if (XdConstants.isDebugMode()) System.out.println(responseBody);
-                        final XdUpdateBean xdUpdateBean = new Gson().fromJson(responseBody, XdUpdateBean.class);
+                        final XdUpdateBean xdUpdateBean = new XdUpdateBean();
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            xdUpdateBean.setVersionCode(jsonObject.getInt("versionCode"));
+                            xdUpdateBean.setSize(jsonObject.getInt("size"));
+                            xdUpdateBean.setVersionName(jsonObject.getString("versionName"));
+                            xdUpdateBean.setUrl(jsonObject.getString("url"));
+                            xdUpdateBean.setNote(jsonObject.getString("note"));
+                            xdUpdateBean.setMd5(jsonObject.getString("md5"));
+                        } catch (JSONException e) {
+                            if (XdConstants.isDebugMode()) e.printStackTrace();
+                            return;
+                        }
                         final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
                         final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
-                        if (xdUpdateBean == null || currentName == null) return;
                         final int versionCode = xdUpdateBean.getVersionCode();
                         final String versionName = xdUpdateBean.getVersionName();
                         if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
