@@ -9,9 +9,7 @@
 
 ![Alt text](https://raw.githubusercontent.com/xingda920813/XDUpdate/master/Screenshot_downloading.png)
 
-# 引入
-
-## 1.添加二进制
+## 引入
 
 build.gradle中添加
 
@@ -21,17 +19,6 @@ build.gradle中添加
     compile 'com.squareup.okio:okio:+'
     compile 'io.reactivex:rxandroid:+'
     compile 'io.reactivex:rxjava:+'
-
-## 2.AndroidManifest.xml中添加：
-	
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!--在线参数只需要 INTERNET 权限即可，其他的权限和Service都不需要.-->
-    <uses-permission android:name="android.permission.INTERNET"/>
-	
-    <application>
-    <service android:name="com.xdandroid.xdupdate.XdUpdateService"/>
-    </application>
     
 # 自动更新
 ## 1.准备描述更新信息的JSON文件
