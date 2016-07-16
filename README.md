@@ -37,7 +37,6 @@ build.gradle中添加
                 .setAllow4G(true)                             //是否允许使用运营商网络检查更新(默认:false)
                 .setShowNotification(true)                    
                 //使用通知提示用户有更新，用户点击通知后弹出提示框，而不是检测到更新直接弹框(默认:true，仅对非强制检查更新有效)
-                .setIconResId(R.mipmap.ic_launcher)           //设置在通知栏显示的通知图标资源ID(必须指定，一般为应用图标)
                 .setOnUpdateListener(new XdUpdateAgent.OnUpdateListener() {
 						//取得更新信息JSON后的回调(可选)，回调在主线程，可执行UI操作，updateBean为JSON对应的数据结构  
                         public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {

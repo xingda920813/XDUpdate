@@ -97,7 +97,7 @@ public class XdUpdateUtils {
             BigInteger bi = new BigInteger(1, md5.digest());
             return bi.toString(16);
         } catch (Throwable e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace();
+            if (XdConstants.debugMode) e.printStackTrace();
             return "";
         } finally {
             closeQuietly(fis);
@@ -112,7 +112,7 @@ public class XdUpdateUtils {
             applicationInfo = packageManager.getApplicationInfo(app.getPackageName(), 0);
             return (String) packageManager.getApplicationLabel(applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace();
+            if (XdConstants.debugMode) e.printStackTrace();
             return "";
         }
     }
@@ -125,7 +125,7 @@ public class XdUpdateUtils {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionCode = info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace();
+            if (XdConstants.debugMode) e.printStackTrace();
         }
         return versionCode;
     }
@@ -138,9 +138,22 @@ public class XdUpdateUtils {
             info = manager.getPackageInfo(app.getPackageName(), 0);
             versionName = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.isDebugMode()) e.printStackTrace();
+            if (XdConstants.debugMode) e.printStackTrace();
         }
         return versionName;
+    }
+
+    public static int getAppIconResId(Context app) {
+        int id = 0;
+        PackageManager pm = app.getPackageManager();
+        String pkg = app.getPackageName();
+        try {
+            ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
+            id = ai.icon;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 
     public static boolean isWifi(Context context) {
@@ -150,7 +163,10 @@ public class XdUpdateUtils {
 
     @SuppressWarnings("unchecked")
     public static Map<Serializable, Serializable> toMap(InputStream is) throws IOException, ClassNotFoundException {
-        if (is == null) throw new NullPointerException("inputStream == null");
+        if (is == null) {
+            System.err.println("inputStream == null");
+            return null;
+        }
         ObjectInputStream ois = new ObjectInputStream(is);
         Map<Serializable, Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
         closeQuietly(ois);

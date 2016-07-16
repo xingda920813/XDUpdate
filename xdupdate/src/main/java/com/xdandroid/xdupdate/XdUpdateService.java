@@ -67,9 +67,8 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
-                        }
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 500);
                     }
                     break;
@@ -88,8 +87,7 @@ public class XdUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final XdUpdateBean xdUpdateBean = (XdUpdateBean) intent.getSerializableExtra("xdUpdateBean");
-        int iconResId = intent.getIntExtra("appIcon", 0);
-        if (xdUpdateBean == null || iconResId == 0) {
+        if (xdUpdateBean == null) {
             stopSelf();
             return START_NOT_STICKY;
         }
@@ -98,9 +96,9 @@ public class XdUpdateService extends Service {
         builder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
-                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.getVersionName() + XdConstants.getDownloadingText())
-                .setSmallIcon(iconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.getVersionName() + XdConstants.getDownloadingText() + "...")
+                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText)
+                .setSmallIcon(XdUpdateUtils.getAppIconResId(getApplicationContext()))
+                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText + "...")
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -108,7 +106,7 @@ public class XdUpdateService extends Service {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
                 OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url(xdUpdateBean.getUrl()).build();
+                Request request = new Request.Builder().url(xdUpdateBean.url).build();
                 Response response;
                 try {
                     response = client.newCall(request).execute();
@@ -122,7 +120,6 @@ public class XdUpdateService extends Service {
                 }
             }
         }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .subscribe(new Subscriber<Response>() {
 
                     public void onCompleted() {
@@ -130,7 +127,7 @@ public class XdUpdateService extends Service {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (XdConstants.isDebugMode()) e.printStackTrace();
+                        if (XdConstants.debugMode) e.printStackTrace();
                     }
 
                     @Override
@@ -156,7 +153,7 @@ public class XdUpdateService extends Service {
                             length = 0;
                             if (file.exists()) {
                                 String Md5JustDownloaded = XdUpdateUtils.getMd5ByFile(file);
-                                String Md5InUpdateBean = xdUpdateBean.getMd5();
+                                String Md5InUpdateBean = xdUpdateBean.md5;
                                 if (Md5JustDownloaded.equalsIgnoreCase(Md5InUpdateBean)) {
                                     Uri uri = Uri.fromFile(file);
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -169,7 +166,7 @@ public class XdUpdateService extends Service {
                                 }
                             }
                         } catch (Throwable e) {
-                            if (XdConstants.isDebugMode()) e.printStackTrace();
+                            if (XdConstants.debugMode) e.printStackTrace();
                             sendBroadcast(new Intent("com.xdandroid.xdupdate.DeleteUpdate"));
                         } finally {
                             XdUpdateUtils.closeQuietly(fos);

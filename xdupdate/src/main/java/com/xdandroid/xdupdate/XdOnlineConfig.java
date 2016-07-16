@@ -44,8 +44,14 @@ public class XdOnlineConfig {
     }
 
     public void getOnlineConfig() {
-        if (TextUtils.isEmpty(mapUrl)) throw new NullPointerException("Please set mapUrl.");
-        if (l == null) throw new NullPointerException("Please set onConfigAcquiredListener.");
+        if (TextUtils.isEmpty(mapUrl)) {
+            System.err.println("Please set mapUrl.");
+            return;
+        }
+        if (l == null) {
+            System.err.println("Please set onConfigAcquiredListener.");
+            return;
+        }
         subscription = Observable.create(new Observable.OnSubscribe<Map<Serializable, Serializable>>() {
             @Override
             public void call(Subscriber<? super Map<Serializable, Serializable>> subscriber) {
@@ -58,7 +64,7 @@ public class XdOnlineConfig {
                     if (response.isSuccessful()) {
                         is = response.body().byteStream();
                         final Map<Serializable, Serializable> map = XdUpdateUtils.toMap(is);
-                        if (XdConstants.isDebugMode()) System.out.println(map);
+                        if (XdConstants.debugMode) System.out.println(map);
                         subscriber.onNext(map);
                     } else {
                         subscriber.onError(new IOException(response.code() + " : " + response.body().string()));
@@ -78,7 +84,7 @@ public class XdOnlineConfig {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (XdConstants.isDebugMode()) e.printStackTrace();
+                        if (XdConstants.debugMode) e.printStackTrace();
                         l.onFailure(e);
                     }
 
@@ -105,7 +111,7 @@ public class XdOnlineConfig {
         }
 
         public Builder setDebugMode(boolean debugMode) {
-            XdConstants.setDebugMode(debugMode);
+            XdConstants.debugMode = debugMode;
             return this;
         }
 
