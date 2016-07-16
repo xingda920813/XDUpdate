@@ -151,7 +151,7 @@ public class XdUpdateUtils {
             ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
             id = ai.icon;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            if (XdConstants.debugMode) e.printStackTrace();
         }
         return id;
     }
