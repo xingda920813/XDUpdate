@@ -14,11 +14,7 @@
 build.gradle中添加
 
 	compile 'com.xdandroid:xdupdate:+'
-    compile 'com.squareup.okhttp3:okhttp:+'
-    compile 'com.squareup.okio:okio:+'
-    compile 'io.reactivex:rxandroid:+'
-    compile 'io.reactivex:rxjava:+'
-    
+
 # 自动更新
 ## 1.准备描述更新信息的JSON文件
     {
@@ -53,8 +49,8 @@ build.gradle中添加
 ## 3.检查更新
 适用于App入口的自动检查更新。默认策略下，若用户选择“以后再说”或者划掉了通知栏的更新提示，则**当天**对**该版本**不再提示更新，防止用户当天每次打开应用时都提示，不胜其烦。  
 
-    updateAgent.update(getActivity()); 
-    
+    updateAgent.update(getActivity());
+
 适用于应用“设置”页面的手动检查更新。此方法无视是否允许使用运营商网络和上面的默认策略，强制检查更新，有更新时直接弹出提示框。     
 
     updateAgent.forceUpdate(getActivity());   

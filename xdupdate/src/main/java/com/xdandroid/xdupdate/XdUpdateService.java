@@ -1,39 +1,24 @@
 package com.xdandroid.xdupdate;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.net.*;
+import android.os.*;
+import android.support.v4.app.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.schedulers.Schedulers;
+import okhttp3.*;
+import rx.*;
+import rx.schedulers.*;
 
 /**
  * Created by XingDa on 2016/04/24.
  */
 public class XdUpdateService extends Service {
 
-    protected Notification.Builder builder;
+    protected NotificationCompat.Builder builder;
     protected NotificationManager manager;
     protected volatile int fileLength;
     protected volatile int length;
@@ -67,7 +52,6 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
                         manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 500);
                     }
@@ -93,7 +77,7 @@ public class XdUpdateService extends Service {
         }
         deleteReceiver = new DeleteReceiver();
         getApplicationContext().registerReceiver(deleteReceiver, new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
-        builder = new Notification.Builder(XdUpdateService.this)
+        builder = new NotificationCompat.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
                 .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText)

@@ -1,35 +1,22 @@
 package com.xdandroid.xdupdate;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
-import android.text.TextUtils;
+import android.app.*;
+import android.content.*;
+import android.net.*;
+import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
+import android.text.*;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
+import java.io.*;
+import java.util.*;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.*;
+import rx.android.schedulers.*;
+import rx.schedulers.*;
 
 /**
  * Created by XingDa on 2016/04/24.
@@ -209,7 +196,7 @@ public class XdUpdateAgent {
                 sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).apply();
             }
         }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
-        Notification.Builder builder = new Notification.Builder(activity)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
                 .setAutoCancel(true)
                 .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
                 .setSmallIcon(XdUpdateUtils.getAppIconResId(activity.getApplicationContext()))
@@ -218,7 +205,6 @@ public class XdUpdateAgent {
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
         NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
         manager.notify(1, builder.build());
     }
 

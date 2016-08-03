@@ -1,6 +1,6 @@
 package com.xdandroid.xdupdate;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Created by XingDa on 2016/5/3.

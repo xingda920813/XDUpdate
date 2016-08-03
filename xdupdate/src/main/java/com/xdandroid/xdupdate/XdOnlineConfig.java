@@ -1,20 +1,15 @@
 package com.xdandroid.xdupdate;
 
-import android.text.TextUtils;
+import android.text.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.*;
+import rx.android.schedulers.*;
+import rx.schedulers.*;
 
 /**
  * Created by XingDa on 2016/4/25.

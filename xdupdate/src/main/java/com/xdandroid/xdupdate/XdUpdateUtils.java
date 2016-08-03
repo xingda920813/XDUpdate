@@ -1,33 +1,21 @@
 package com.xdandroid.xdupdate;
 
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.*;
+import android.content.pm.*;
+import android.net.*;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.security.MessageDigest;
-import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.io.*;
+import java.math.*;
+import java.nio.*;
+import java.nio.channels.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.*;
+import rx.android.schedulers.*;
+import rx.schedulers.*;
 
 /**
  * Created by XingDa on 2016/04/24.
