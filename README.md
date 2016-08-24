@@ -1,5 +1,5 @@
-# XDUpdate
-### Android 自动更新/在线参数
+## XDUpdate
+#### Android 自动更新/在线参数/阿里云OSS一键上传更新
 
 - JSON、APK、Map文件的URL需要支持外链，即可以被直接访问，可考虑放在Git仓库、OSS或自己的服务器上
 
@@ -15,8 +15,8 @@ build.gradle中添加
 
 	compile 'com.xdandroid:xdupdate:+'
 
-# 自动更新
-## 1.准备描述更新信息的JSON文件
+## 自动更新
+#### 1.准备描述更新信息的JSON文件
     {
     "versionCode":4,                          //新版本的versionCode,int型
     "versionName":"1.12",                     //新版本的versionName,String型
@@ -26,7 +26,7 @@ build.gradle中添加
     "size":17962350                           //大小(字节),int型
     }
 
-## 2.构建XdUpdateAgent对象
+#### 2.构建XdUpdateAgent对象
     XdUpdateAgent updateAgent = new XdUpdateAgent.Builder()
                 .setDebugMode(false)                          //是否显示调试信息(默认:false)
                 .setJsonUrl("http://contoso.com/update.json") //JSON文件的URL
@@ -46,7 +46,7 @@ build.gradle中添加
                 .setDownloadingText("正在下载")
                 .build();
 
-## 3.检查更新
+#### 3.检查更新
 适用于App入口的自动检查更新。默认策略下，若用户选择“以后再说”或者划掉了通知栏的更新提示，则**当天**对**该版本**不再提示更新，防止用户当天每次打开应用时都提示，不胜其烦。  
 
     updateAgent.update(getActivity());
@@ -59,12 +59,43 @@ build.gradle中添加
 
     updateAgent.forceUpdateUncancelable(getActivity());   
 
-#### 为防止内存泄漏，需调用updateAgent.onDestroy().
+为防止内存泄漏，需调用updateAgent.onDestroy().
 
-#### 可通过updateAgent.getDialog()得到更新提示框的AlertDialog.
+可通过updateAgent.getDialog()得到更新提示框的AlertDialog.
 
-# 在线参数
-## 1.准备参数文件
+## 阿里云OSS一键上传更新
+
+位于/XDUploadClient/下，XDUpdateClient.jar为程序主体，XDUpdateClient.cmd为Windows下使用的上传脚本，XDUpdateClient.sh为Linux下使用的上传脚本，config.properties为配置文件，其他文件为源码。
+
+一般使用只需把上述 4 个文件放到一个目录（下面称为工作目录）下即可。
+
+#### 1.将更新过的APK命名为 (包名).apk，放到工作目录下
+
+#### 2.编辑config.properties配置文件
+
+```
+packageName = com.xdandroid.xdupload		//包名
+releaseNote = Bug修复		//更新内容
+cdnDomain = http://my-project.oss-cn-shenzhen.aliyuncs.com/		//文件URL的主机名部分
+endpoint = http://oss-cn-shenzhen.aliyuncs.com		//OSS的Endpoint
+accessKeyId = xXxxxXxXxxXxxxxX		//OSS的AccessKeyId
+accessKeySecret = xXxxxxxXXxxXxxxXxxXxxXXXXxxXxx		//OSS的AccessKeySecret
+bucketName = my-project		//OSS的BucketName
+pathPrefix = download/		//文件URL的路径部分（不含文件名）
+```
+
+上传后的APK安装包的URL为 : cdnDomain + pathPrefix + packageName + ".apk"
+
+上传后的JSON文件的URL为 : cdnDomain + pathPrefix + packageName + ".json"
+
+#### 3.将JSON文件的URL填入XdUpdateAgent.Builder的setJsonUrl(String jsonUrl)
+
+#### 4.运行XDUpdateClient.cmd/XDUpdateClient.sh，等待上传完成
+
+Linux系统下，XDUpdateClient.sh需具有"可执行"文件系统权限。
+
+## 在线参数
+#### 1.准备参数文件
 建立JavaSE项目，先将键值对存放在Map中，然后将Map传入下面的writeObject方法，得到参数文件。
 
     public static void writeObject(Map<Serializable,Serializable> map) throws IOException {
@@ -74,7 +105,7 @@ build.gradle中添加
         oos.close();
     }
 
-## 2.得到在线参数
+#### 2.得到在线参数
     XdOnlineConfig onlineConfig = new XdOnlineConfig.Builder()
                     .setDebugMode(false)                         //是否显示调试信息(默认:false)
                     .setMapUrl("http://contoso.com/map.obj")     //参数文件的URL
@@ -90,4 +121,4 @@ build.gradle中添加
                     }).build();
     onlineConfig.getOnlineConfig();
 
-#### 为防止内存泄漏，需调用onlineConfig.onDestroy().
+为防止内存泄漏，需调用onlineConfig.onDestroy().
