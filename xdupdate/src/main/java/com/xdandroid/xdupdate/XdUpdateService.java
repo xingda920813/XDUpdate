@@ -139,6 +139,9 @@ public class XdUpdateService extends Service {
                                 String Md5JustDownloaded = XdUpdateUtils.getMd5ByFile(file);
                                 String Md5InUpdateBean = xdUpdateBean.md5;
                                 if (Md5JustDownloaded.equalsIgnoreCase(Md5InUpdateBean)) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                                        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectFileUriExposure().penaltyLog().build());
+                                    }
                                     Uri uri = Uri.fromFile(file);
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setDataAndType(uri, "application/vnd.android.package-archive");
