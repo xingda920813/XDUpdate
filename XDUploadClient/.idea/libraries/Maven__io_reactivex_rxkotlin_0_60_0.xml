@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.reactivex:rxkotlin:0.60.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactivex/rxkotlin/0.60.0/rxkotlin-0.60.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactivex/rxkotlin/0.60.0/rxkotlin-0.60.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactivex/rxkotlin/0.60.0/rxkotlin-0.60.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
