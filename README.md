@@ -43,7 +43,7 @@ build.gradle中添加
                     })
                 .setDownloadText("立即下载")                   //可选，默认为左侧所示的文本
                 .setInstallText("立即安装(已下载)")
-                .setLaterText("稍后再说")
+                .setLaterText("以后再说")
                 .setHintText("版本更新")
                 .setDownloadingText("正在下载")
                 .build();
