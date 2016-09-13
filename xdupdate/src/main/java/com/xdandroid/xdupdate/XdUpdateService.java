@@ -71,17 +71,19 @@ public class XdUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final XdUpdateBean xdUpdateBean = (XdUpdateBean) intent.getSerializableExtra("xdUpdateBean");
+        int iconResId = intent.getIntExtra("appIcon", 0);
         if (xdUpdateBean == null) {
             stopSelf();
             return START_NOT_STICKY;
         }
         deleteReceiver = new DeleteReceiver();
         getApplicationContext().registerReceiver(deleteReceiver, new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
+        int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(getApplicationContext());
         builder = new NotificationCompat.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
                 .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText)
-                .setSmallIcon(XdUpdateUtils.getAppIconResId(getApplicationContext()))
+                .setSmallIcon(smallIconResId)
                 .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText + "...")
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));

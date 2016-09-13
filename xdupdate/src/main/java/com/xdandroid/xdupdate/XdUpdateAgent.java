@@ -31,6 +31,7 @@ public class XdUpdateAgent {
     protected boolean uncancelable = false;
     protected boolean allow4G;
     protected String jsonUrl;
+    protected int iconResId;
     protected boolean showNotification;
     protected OnUpdateListener l;
     protected Subscription md5Subscription, subscription;
@@ -196,10 +197,11 @@ public class XdUpdateAgent {
                 sp.edit().putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime()).putInt("versionCode", versionCode).putString("versionName", versionName).apply();
             }
         }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
+        int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(activity.getApplicationContext());
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
                 .setAutoCancel(true)
                 .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
-                .setSmallIcon(XdUpdateUtils.getAppIconResId(activity.getApplicationContext()))
+                .setSmallIcon(smallIconResId)
                 .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
                 .setContentText(xdUpdateBean.note)
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
@@ -235,6 +237,7 @@ public class XdUpdateAgent {
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(activity, XdUpdateService.class);
                     intent.putExtra("xdUpdateBean", xdUpdateBean);
+                    intent.putExtra("appIcon", iconResId);
                     activity.startService(intent);
                 }
             });
@@ -247,6 +250,7 @@ public class XdUpdateAgent {
 
         protected String mJsonUrl = "";
         protected boolean mAllow4G = false;
+        protected int mIconResId = 0;
         protected boolean mShowNotification = true;
         protected OnUpdateListener mListener = null;
 
@@ -257,6 +261,11 @@ public class XdUpdateAgent {
 
         public Builder setAllow4G(boolean allow4G) {
             mAllow4G = allow4G;
+            return this;
+        }
+
+        public Builder setIconResId(int iconResId) {
+            mIconResId = iconResId;
             return this;
         }
 
@@ -304,6 +313,7 @@ public class XdUpdateAgent {
             if (instance == null) instance = new XdUpdateAgent();
             instance.jsonUrl = mJsonUrl;
             instance.allow4G = mAllow4G;
+            instance.iconResId = mIconResId;
             instance.showNotification = mShowNotification;
             instance.l = mListener;
             return instance;
