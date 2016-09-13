@@ -46,6 +46,7 @@ build.gradle中添加
                 .setLaterText("以后再说")
                 .setHintText("版本更新")
                 .setDownloadingText("正在下载")
+								.setIconResId(R.mipmap.ic_launcher)           //设置在通知栏显示的通知图标资源ID(可选)
                 .build();
 
 #### 3.检查更新
