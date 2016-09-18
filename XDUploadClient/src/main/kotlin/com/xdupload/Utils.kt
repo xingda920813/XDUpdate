@@ -12,13 +12,16 @@ import java.security.*
  */
 internal object Utils {
 
+    var sArgs: Array<String>? = null
+
     val sGson: Gson
 
     init {
         sGson = Gson()
     }
 
-    fun extractApkInfo(): XdUpdateBean {
+    fun extractApkInfo(args: Array<String>): XdUpdateBean {
+        sArgs = args
         val apk = File(Environment.sPackageName + ".apk")
         val parser = ApkParser(apk)
         val apkMeta = parser.apkMeta
@@ -57,7 +60,7 @@ internal object Utils {
     }
 
     fun readPropertiesAsString(): String {
-        val fis = FileInputStream(File("config.properties"))
+        val fis = if (sArgs != null && sArgs!!.size > 0) FileInputStream(File(sArgs!![0])) else FileInputStream(File("config.properties"))
         var len: Int
         val buffer = ByteArray(8192)
         val baos = ByteArrayOutputStream()

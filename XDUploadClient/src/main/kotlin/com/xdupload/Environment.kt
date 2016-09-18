@@ -10,7 +10,6 @@ internal object Environment {
 
     val sPackageName: String
     val sReleaseNote: String
-
     val sCdnDomain: String
     val sEndpoint: String
     val sAccessKeyId: String
@@ -21,10 +20,8 @@ internal object Environment {
     init {
         val properties = Properties()
         properties.load(StringReader(Utils.readPropertiesAsString()))
-
         sPackageName = properties.getProperty("packageName")
         sReleaseNote = properties.getProperty("releaseNote")
-
         sCdnDomain = properties.getProperty("cdnDomain")
         sEndpoint = properties.getProperty("endpoint")
         sAccessKeyId = properties.getProperty("accessKeyId")

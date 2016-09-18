@@ -11,7 +11,7 @@ import java.io.*
 object OSSMain {
 
     @JvmStatic fun main(args: Array<String>) {
-        val xdUpdateBean = Utils.extractApkInfo()
+        val xdUpdateBean = Utils.extractApkInfo(args)
         val json = Utils.sGson.toJson(xdUpdateBean)
         Utils.saveJsonToFile(json)
         doUpload()
