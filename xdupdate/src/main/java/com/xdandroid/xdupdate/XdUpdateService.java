@@ -52,7 +52,12 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
-                        manager.notify(2, builder.setContentText(XdUpdateUtils.formatToMegaBytes(length) + "M/" + XdUpdateUtils.formatToMegaBytes(fileLength) + "M").setProgress(fileLength, length, false).build());
+                        manager.notify(2, builder
+                                .setContentText(XdUpdateUtils.formatToMegaBytes(length) +
+                                "M/" +
+                                XdUpdateUtils.formatToMegaBytes(fileLength) + "M")
+                                .setProgress(fileLength, length, false)
+                                .build());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 500);
                     }
                     break;
@@ -105,8 +110,8 @@ public class XdUpdateService extends Service {
                     subscriber.onError(e);
                 }
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response>() {
+        }).subscribeOn(Schedulers.io()).subscribe(
+                new Subscriber<Response>() {
 
                     public void onCompleted() {
                     }
@@ -142,7 +147,10 @@ public class XdUpdateService extends Service {
                                 String Md5InUpdateBean = xdUpdateBean.md5;
                                 if (Md5JustDownloaded.equalsIgnoreCase(Md5InUpdateBean)) {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                                        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectFileUriExposure().penaltyLog().build());
+                                        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                                                .detectFileUriExposure()
+                                                .penaltyLog()
+                                                .build());
                                     }
                                     Uri uri = Uri.fromFile(file);
                                     Intent intent = new Intent(Intent.ACTION_VIEW);

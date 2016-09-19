@@ -31,6 +31,7 @@ build.gradle中添加
 #### 2.构建XdUpdateAgent对象
     XdUpdateAgent updateAgent = new XdUpdateAgent.Builder()
                 .setDebugMode(false)                          //是否显示调试信息(默认:false)
+								.setUpdateBean(XdUpdateBean updateBean)				//设置通过其他途径得到的XdUpdateBean
                 .setJsonUrl("http://contoso.com/update.json") //JSON文件的URL
                 .setAllow4G(true)                             //是否允许使用运营商网络检查更新(默认:false)
                 .setShowNotification(true)                    
@@ -66,6 +67,14 @@ build.gradle中添加
 
 可通过updateAgent.getDialog()得到更新提示框的AlertDialog.
 
+#### 4.若不想使用JSON文件，可传入由其他途径得到的XdUpdateBean
+
+```
+	XdUpdateAgent.Builder.setUpdateBean(XdUpdateBean updateBean);
+```
+
+可使用第三方推送服务的自定义消息/透传功能，接收到服务端推送过来的JSON(String)后，解析成一个XdUpdateBean，传入上述方法，即可使用推送带过来的JSON进行更新提示
+
 ## 阿里云OSS一键上传更新
 
 位于/XDUploadClient/下，XDUpdateClient.jar为程序主体，XDUpdateClient.cmd为Windows下使用的上传脚本，XDUpdateClient.sh为Linux下使用的上传脚本，config.properties为配置文件，其他文件为源码。
@@ -79,12 +88,12 @@ build.gradle中添加
 ```
 packageName = com.xdandroid.xdupload		//包名
 releaseNote = Bug修复		//更新内容
-cdnDomain = http://my-project.oss-cn-shenzhen.aliyuncs.com/		//文件URL的主机名部分
-endpoint = http://oss-cn-shenzhen.aliyuncs.com		//OSS的Endpoint
+cdnDomain = http://my-project.oss-cn-shenzhen.aliyuncs.com/		//文件URL的主机名部分(斜线后置)
+endpoint = http://oss-cn-shenzhen.aliyuncs.com		//OSS的Endpoint(无斜线)
 accessKeyId = xXxxxXxXxxXxxxxX		//OSS的AccessKeyId
 accessKeySecret = xXxxxxxXXxxXxxxXxxXxxXXXXxxXxx		//OSS的AccessKeySecret
 bucketName = my-project		//OSS的BucketName
-pathPrefix = download/		//文件URL的路径部分（不含文件名）
+pathPrefix = download/		//文件URL的路径部分（不含文件名, 斜线后置）
 ```
 
 上传后的APK安装包的URL为 : cdnDomain + pathPrefix + packageName + ".apk"
@@ -96,6 +105,16 @@ pathPrefix = download/		//文件URL的路径部分（不含文件名）
 #### 4.运行XDUpdateClient.cmd/XDUpdateClient.sh，等待上传完成
 
 Linux系统下，XDUpdateClient.sh需具有"可执行"文件系统权限。
+
+#### 5.指定使用的配置文件(可选)
+
+运行XDUpdateClient.jar时可以带一个参数，传入配置文件的路径，即可使用该配置文件，而不是默认的config.properties。
+
+```
+	java -jar XDUploadClient.jar my-project.properties
+```
+
+若不带参数运行XDUpdateClient.jar，将使用与XDUpdateClient.jar同目录下的config.properties。
 
 ## 在线参数
 #### 1.准备参数文件
