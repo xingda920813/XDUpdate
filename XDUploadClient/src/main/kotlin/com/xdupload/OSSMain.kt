@@ -4,7 +4,6 @@ import com.aliyun.oss.*
 import com.aliyun.oss.common.auth.*
 import com.aliyun.oss.model.*
 import rx.*
-import rx.lang.kotlin.*
 import rx.schedulers.*
 import java.io.*
 
@@ -21,10 +20,9 @@ object OSSMain {
     private fun doUpload() {
         val credentialsProvider = DefaultCredentialProvider(Environment.sAccessKeyId, Environment.sAccessKeySecret)
         val oss = OSSClient(Environment.sEndpoint, credentialsProvider)
-        Observable.combineLatest(
-                observable<Boolean> { putObject("json", oss, it) }.subscribeOn(Schedulers.io()),
-                observable<Boolean> { putObject("apk", oss, it) }.subscribeOn(Schedulers.io()))
-        { aBoolean, aBoolean2 -> true }
+        val jsonObsrv = Observable.create(Observable.OnSubscribe<Boolean> {putObject("json", oss, it)}).subscribeOn(Schedulers.io())
+        val apkObsrv = Observable.create(Observable.OnSubscribe<Boolean> {putObject("apk", oss, it)}).subscribeOn(Schedulers.io())
+        Observable.combineLatest(listOf(jsonObsrv, apkObsrv), { true })
                 .observeOn(Schedulers.immediate())
                 .subscribe({ System.exit(0) },
                            { it.printStackTrace() })

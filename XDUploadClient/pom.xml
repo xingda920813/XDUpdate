@@ -8,10 +8,6 @@
     <artifactId>UploadClient</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <kotlin.version>1.0.3</kotlin.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -25,20 +21,13 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
+                <version>1.0.4</version>
                 <executions>
                     <execution>
                         <id>compile</id>
                         <phase>process-sources</phase>
                         <goals>
                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>process-test-sources</phase>
-                        <goals>
-                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -57,13 +46,7 @@
         <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
-            <version>1.1.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxkotlin</artifactId>
-            <version>0.60.0</version>
+            <version>1.2.1</version>
         </dependency>
 
         <dependency>
@@ -81,14 +64,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
+            <version>1.0.4</version>
         </dependency>
 
     </dependencies>
