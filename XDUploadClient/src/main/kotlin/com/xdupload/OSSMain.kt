@@ -24,8 +24,10 @@ object OSSMain {
         val apkObsrv = Observable.create(Observable.OnSubscribe<Boolean> {putObject("apk", oss, it)}).subscribeOn(Schedulers.io())
         Observable.combineLatest(listOf(jsonObsrv, apkObsrv), { true })
                 .observeOn(Schedulers.immediate())
-                .subscribe({ System.exit(0) },
-                           { it.printStackTrace() })
+                .subscribe({
+                               oss.shutdown()
+                               System.exit(0)
+                           }, { it.printStackTrace() })
     }
 
     private fun putObject(type: String, oss: OSS, subscriber: Subscriber<in Boolean>) {
@@ -41,8 +43,9 @@ object OSSMain {
                                            apk)
             }
         }
+
         try {
-            oss.putObject(request)
+            oss.putObject(request.withProgressListener(PutObjectProgressListener()))
             subscriber.onNext(true)
             subscriber.onCompleted()
         } catch (e: ClientException) {

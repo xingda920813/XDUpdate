@@ -6,6 +6,7 @@ import java.io.*
 import java.math.*
 import java.nio.channels.*
 import java.security.*
+import java.text.*
 
 /**
  * Created by xingda on 16-8-24.
@@ -51,6 +52,14 @@ internal object Utils {
             val bi = BigInteger(1, md5.digest())
             return bi.toString(16)
         }
+
+    fun formatToMegaBytes(bytes: Long): String {
+        val megaBytes = bytes / 1048576.0
+        if (megaBytes < 1) {
+            return DecimalFormat("0.0").format(megaBytes) + " M"
+        }
+        return DecimalFormat("#.0").format(megaBytes) + " M"
+    }
 
     fun saveJsonToFile(json: String) {
         val jsonFile = File(Environment.sPackageName + ".json")
