@@ -63,7 +63,7 @@ public class XdUpdateUtils {
                     MessageDigest md5 = MessageDigest.getInstance("MD5");
                     md5.update(byteBuffer);
                     BigInteger bi = new BigInteger(1, md5.digest());
-                    subscriber.onNext(bi.toString(16));
+                    subscriber.onNext(String.format("%032x", bi));
                 } catch (Throwable e) {
                     subscriber.onError(e);
                 } finally {
@@ -83,7 +83,7 @@ public class XdUpdateUtils {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(byteBuffer);
             BigInteger bi = new BigInteger(1, md5.digest());
-            return bi.toString(16);
+            return String.format("%032x", bi);
         } catch (Throwable e) {
             if (XdConstants.debugMode) e.printStackTrace();
             return "";
