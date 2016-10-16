@@ -140,7 +140,7 @@ public class XdUpdateAgent {
         final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
         final int versionCode = updateBean.versionCode;
         final String versionName = updateBean.versionName;
-        if (currentCode < versionCode || currentName.compareToIgnoreCase(versionName) < 0) {
+        if (currentCode < versionCode/* || currentName.compareToIgnoreCase(versionName) < 0*/) {
             if (l != null) l.onUpdate(true, updateBean);
             final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_PRIVATE);
             long lastIgnoredDayBegin = sp.getLong("time", 0);
