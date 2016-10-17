@@ -87,9 +87,9 @@ public class XdUpdateService extends Service {
         builder = new NotificationCompat.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
-                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText)
+                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText)
                 .setSmallIcon(smallIconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + xdUpdateBean.versionName + XdConstants.downloadingText + "...")
+                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText + "...")
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -104,7 +104,7 @@ public class XdUpdateService extends Service {
                     if (response.isSuccessful()) {
                         subscriber.onNext(response);
                     } else {
-                        subscriber.onError(new IOException(response.code() + " : " + response.body().string()));
+                        subscriber.onError(new IOException(response.code() + ": " + response.body().string()));
                     }
                 } catch (Throwable e) {
                     subscriber.onError(e);
@@ -159,7 +159,7 @@ public class XdUpdateService extends Service {
                                     startActivity(intent);
                                 } else {
                                     file.delete();
-                                    throw new Exception("Md5 dismatch. Md5JustDownloaded : " + Md5JustDownloaded + ". Md5InUpdateBean : " + Md5InUpdateBean + ".");
+                                    throw new Exception("Md5 dismatch. Md5JustDownloaded: " + Md5JustDownloaded + ". Md5InUpdateBean: " + Md5InUpdateBean + ".");
                                 }
                             }
                         } catch (Throwable e) {

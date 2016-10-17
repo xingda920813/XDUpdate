@@ -89,7 +89,7 @@ public class XdUpdateAgent {
                         if (response.isSuccessful()) {
                             subscriber.onNext(response);
                         } else {
-                            subscriber.onError(new IOException(response.code() + " : " + response.body().string()));
+                            subscriber.onError(new IOException(response.code() + ": " + response.body().string()));
                         }
                     } catch (Throwable e) {
                         subscriber.onError(e);
@@ -171,7 +171,7 @@ public class XdUpdateAgent {
                             fileExists = true;
                         } else {
                             file.delete();
-                            if (XdConstants.debugMode) System.err.println("Md5 dismatch. Md5JustDownloaded : " + Md5JustDownloaded + ". Md5InUpdateBean : " + Md5InUpdateBean + ".");
+                            if (XdConstants.debugMode) System.err.println("Md5 dismatch. Md5JustDownloaded: " + Md5JustDownloaded + ". Md5InUpdateBean: " + Md5InUpdateBean + ".");
                         }
                         proceedToUI(sp, file, fileExists, activity, versionName, updateBean, versionCode);
                     }
@@ -212,9 +212,9 @@ public class XdUpdateAgent {
         int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(activity.getApplicationContext());
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
                 .setAutoCancel(true)
-                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
+                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " +  versionName + " " + XdConstants.hintText)
                 .setSmallIcon(smallIconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + versionName + XdConstants.hintText)
+                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " + versionName + " " + XdConstants.hintText)
                 .setContentText(xdUpdateBean.note)
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
@@ -226,7 +226,7 @@ public class XdUpdateAgent {
         AlertDialog.Builder builder = new AlertDialog
                 .Builder(activity)
                 .setCancelable(false)
-                .setTitle(versionName + XdConstants.hintText)
+                .setTitle(versionName + " " + XdConstants.hintText)
                 .setMessage(xdUpdateBean.note);
         if (!uncancelable) {
             builder.setNegativeButton(XdConstants.laterText, new DialogInterface.OnClickListener() {
