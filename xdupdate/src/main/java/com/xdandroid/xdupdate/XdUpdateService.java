@@ -2,10 +2,10 @@ package com.xdandroid.xdupdate;
 
 import android.annotation.*;
 import android.app.*;
+import android.app.Notification;
 import android.content.*;
 import android.net.*;
 import android.os.*;
-import android.support.v4.app.*;
 
 import java.io.*;
 
@@ -18,7 +18,7 @@ import rx.schedulers.*;
  */
 public class XdUpdateService extends Service {
 
-    protected NotificationCompat.Builder builder;
+    protected Notification.Builder builder;
     protected NotificationManager manager;
     protected volatile int fileLength;
     protected volatile int length;
@@ -52,10 +52,11 @@ public class XdUpdateService extends Service {
                     if (interrupted) {
                         manager.cancel(2);
                     } else {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
                         manager.notify(2, builder
                                 .setContentText(XdUpdateUtils.formatToMegaBytes(length) +
-                                "M/" +
-                                XdUpdateUtils.formatToMegaBytes(fileLength) + "M")
+                                        "M/" +
+                                        XdUpdateUtils.formatToMegaBytes(fileLength) + "M")
                                 .setProgress(fileLength, length, false)
                                 .build());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 500);
@@ -73,6 +74,7 @@ public class XdUpdateService extends Service {
         return null;
     }
 
+    @SuppressWarnings("ResourceType")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final XdUpdateBean xdUpdateBean = (XdUpdateBean) intent.getSerializableExtra("xdUpdateBean");
@@ -84,7 +86,7 @@ public class XdUpdateService extends Service {
         deleteReceiver = new DeleteReceiver();
         getApplicationContext().registerReceiver(deleteReceiver, new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
         int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(getApplicationContext());
-        builder = new NotificationCompat.Builder(XdUpdateService.this)
+        builder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
                 .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText)
@@ -92,6 +94,7 @@ public class XdUpdateService extends Service {
                 .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText + "...")
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) builder.setShowWhen(true);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         subscription = Observable.create(new Observable.OnSubscribe<Response>() {
             @Override

@@ -1,9 +1,10 @@
 package com.xdandroid.xdupdate;
 
 import android.app.*;
+import android.app.Notification;
 import android.content.*;
 import android.net.*;
-import android.support.v4.app.NotificationCompat;
+import android.os.*;
 import android.support.v7.app.AlertDialog;
 import android.text.*;
 
@@ -194,7 +195,9 @@ public class XdUpdateAgent {
         }
     }
 
+    @SuppressWarnings("ResourceType")
     protected void showNotification(final SharedPreferences sp, final File file, final boolean fileExists, final Activity activity, final String versionName, final XdUpdateBean xdUpdateBean, final int versionCode) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
         activity.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
@@ -210,7 +213,7 @@ public class XdUpdateAgent {
             }
         }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
         int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(activity.getApplicationContext());
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
+        Notification.Builder builder = new Notification.Builder(activity)
                 .setAutoCancel(true)
                 .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " +  versionName + " " + XdConstants.hintText)
                 .setSmallIcon(smallIconResId)
@@ -218,6 +221,11 @@ public class XdUpdateAgent {
                 .setContentText(xdUpdateBean.note)
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setShowWhen(true);
+            builder.setVibrate(new long[0]);
+        }
+        builder.setPriority(Notification.PRIORITY_HIGH);
         NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1, builder.build());
     }
