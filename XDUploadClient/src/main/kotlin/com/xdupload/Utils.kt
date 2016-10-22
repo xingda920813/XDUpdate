@@ -50,7 +50,7 @@ internal object Utils {
             val md5 = MessageDigest.getInstance("MD5")
             md5.update(byteBuffer)
             val bi = BigInteger(1, md5.digest())
-            return bi.toString(16)
+            return String.format("%032x", bi)
         }
 
     fun formatToMegaBytes(bytes: Long): String {
