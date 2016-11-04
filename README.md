@@ -79,7 +79,7 @@ build.gradle中添加
 
 ## 阿里云OSS一键上传更新
 
-位于/XDUploadClient/下，XDUpdateClient.jar为程序主体，XDUpdateClient.cmd为Windows下使用的上传脚本，XDUpdateClient.sh为Linux下使用的上传脚本，config.properties为配置文件，其他文件为源码。
+位于/XdUploadClient/下，XdUpdateClient.jar为程序主体，XdUpdateClient.cmd为Windows下使用的上传脚本，XdUpdateClient.sh为Linux下使用的上传脚本，config.properties为配置文件，其他文件为源码。
 
 一般使用只需把上述 4 个文件放到一个目录（下面称为工作目录）下即可。
 
@@ -88,7 +88,7 @@ build.gradle中添加
 #### 2.编辑config.properties配置文件
 
 ```
-packageName = com.xdandroid.xdupload		//包名
+packageName = com.xdandroid.myproject		//包名
 releaseNote = Bug修复		//更新内容
 cdnDomain = http://my-project.oss-cn-shenzhen.aliyuncs.com/		//文件URL的主机名部分(斜线后置)
 endpoint = http://oss-cn-shenzhen.aliyuncs.com		//OSS的Endpoint(无斜线)
@@ -104,19 +104,97 @@ pathPrefix = download/		//文件URL的路径部分（不含文件名, 斜线后�
 
 #### 3.将JSON文件的URL填入XdUpdateAgent.Builder的setJsonUrl(String jsonUrl)
 
-#### 4.运行XDUpdateClient.cmd/XDUpdateClient.sh，等待上传完成
+#### 4.运行XdUpdateClient.cmd/XdUpdateClient.sh，等待上传完成
 
-Linux系统下，XDUpdateClient.sh需具有"可执行"文件系统权限。
+Linux系统下，XdUpdateClient.sh需具有"可执行"文件系统权限。
 
 #### 5.指定使用的配置文件(可选)
 
-运行XDUpdateClient.jar时可以带一个参数，传入配置文件的路径，即可使用该配置文件，而不是默认的config.properties。
+运行XdUpdateClient.jar时可以带一个参数，传入配置文件的路径，即可使用该配置文件，而不是默认的config.properties。
+
+(此时，可以再带第 2 个参数，用来 override 掉 properties 中的更新内容。)
 
 ```
-	java -jar XDUploadClient.jar my-project.properties
+	java -jar XdUploadClient.jar my-project.properties
 ```
 
-若不带参数运行XDUpdateClient.jar，将使用与XDUpdateClient.jar同目录下的config.properties。
+若不带参数运行XdUpdateClient.jar，将使用与XdUpdateClient.jar同目录下的config.properties。
+
+## 百川 HotFix 结合 LeanCloud Push 推送下发热补丁
+
+位于/PushHotFixAtLeanCloud/下，PushHotFixAtLeanCloud.jar为程序主体，PushHotFixAtLeanCloud.cmd为Windows下使用的推送脚本，PushHotFixAtLeanCloud.sh为Linux下使用的推送脚本，config.properties为配置文件，其他文件为源码。
+
+一般使用只需把上述 3 个文件放到一个目录（下面称为工作目录）下即可。
+
+#### 1.编辑config.properties配置文件
+
+```
+action = com.xdandroid.myproject.HOTFIX		//自定义 Receiver 匹配的 Action
+versionName = 1.0.0		//App 的 versionName
+appId = xxXXXxxXXxxxxxXXxXxxxxXX-xxXxxXxx		//LeanCloud AppId
+appKey = XXxxxxxxXxxXXxxxxxXxxXxx		//LeanCloud AppKey
+```
+
+#### 2.自定义 Receiver
+
+Manifest:
+
+```
+<receiver android:name=".receiver.LeanReceiver">
+	<intent-filter>
+		<action android:name="android.intent.action.BOOT_COMPLETED"/>
+		<action android:name="android.intent.action.USER_PRESENT"/>
+		<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+		<!-- 自定义 Receiver 匹配的 Action -->
+		<action android:name="com.xdandroid.myproject.HOTFIX"/>
+  </intent-filter>
+</receiver>
+```
+
+Push:
+
+```
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS)
+public class Push implements Serializable {
+
+  public PushCustomParams pushCustomParams;
+  public String title;
+  public String alert;
+
+  @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS)
+  public static class PushCustomParams implements Serializable {
+
+    public String deliveryItemId;
+    public String type;
+    public String subType;
+  }
+}
+```
+
+LeanReceiver:
+
+```
+@Override
+public void onReceive(Context context, Intent intent) {
+	if (intent == null) return;
+	if (!"com.xdandroid.myproject.HOTFIX".equals(intent.getAction())) return;
+	Bundle extras = intent.getExtras();
+	if (extras == null) return;
+	String json = extras.getString("com.avos.avoscloud.Data", "");
+	Push push = LoganSquare.parse(json, Push.class);
+	if (push == null || push.pushCustomParams == null || TextUtils.isEmpty(push.pushCustomParams.type)) return;
+	switch (push.pushCustomParams.type) {
+		case "hotfix":
+			if (XdUpdateUtils.getVersionName(context).equals(push.pushCustomParams.subType))
+				HotFixManager.getInstance().queryNewHotPatch();
+			break;
+		default:
+			break;
+	}
+}
+```
+
+#### 3.发布热补丁后，运行 PushHotFixAtLeanCloud.cmd/PushHotFixAtLeanCloud.sh 进行推送
 
 ## 在线参数
 #### 1.准备参数文件

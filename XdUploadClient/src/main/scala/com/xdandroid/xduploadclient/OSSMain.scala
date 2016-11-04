@@ -1,11 +1,11 @@
 package com.xdandroid.xduploadclient
 
-import java.io.File
+import java.io._
 
-import com.aliyun.oss.{OSS, OSSClient}
-import com.aliyun.oss.common.auth.DefaultCredentialProvider
-import com.aliyun.oss.model.PutObjectRequest
-import rx.lang.scala.schedulers.{IOScheduler, ImmediateScheduler}
+import com.aliyun.oss._
+import com.aliyun.oss.common.auth._
+import com.aliyun.oss.model._
+import rx.lang.scala.schedulers._
 import rx.lang.scala.{Observable, Subscriber}
 
 /**
@@ -26,9 +26,9 @@ object OSSMain {
     val oss = new OSSClient(Environment.sEndpoint, credentialsProvider)
     val jsonObsrv = Observable((s: Subscriber[Boolean]) => {putObject("json", oss, s)}).subscribeOn(IOScheduler())
     val apkObsrv = Observable((s: Subscriber[Boolean]) => {putObject("apk", oss, s)}).subscribeOn(IOScheduler())
-    Observable.combineLatest(Seq(jsonObsrv, apkObsrv)) ((s: Seq[Boolean]) => true)
+    Observable.combineLatest(Iterable(jsonObsrv, apkObsrv)) ((_: Seq[Boolean]) => true)
       .observeOn(ImmediateScheduler())
-      .subscribe((b: Boolean) => {
+      .subscribe((_: Boolean) => {
         oss.shutdown()
         System.exit(0)
       }, (t: Throwable) => t.printStackTrace())
