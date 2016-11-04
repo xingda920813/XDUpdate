@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: net.sf.ezmorph:ezmorph:1.0.6">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/ezmorph/ezmorph/1.0.6/ezmorph-1.0.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

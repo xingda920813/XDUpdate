@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <option name="implicitConversions" value="true" />
+    <profile name="Gradle 1" modules="XdUploadClient">
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+      <parameters>
+        <parameter value="-target:jvm-1.8" />
+      </parameters>
+    </profile>
+  </component>
+</project>

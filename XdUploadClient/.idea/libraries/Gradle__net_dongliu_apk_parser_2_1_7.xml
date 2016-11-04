@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.dongliu:apk-parser:2.1.7">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.dongliu/apk-parser/2.1.7/a0188378dfe72cbdf232e6938cf600ab05947a9a/apk-parser-2.1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.dongliu/apk-parser/2.1.7/bdc10fedeeed3edad787c2cdf339f638a85c8f56/apk-parser-2.1.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

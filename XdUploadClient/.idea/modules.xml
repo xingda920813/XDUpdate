@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XdUploadClient.iml" filepath="$PROJECT_DIR$/.idea/modules/XdUploadClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XdUploadClient_main.iml" filepath="$PROJECT_DIR$/.idea/modules/XdUploadClient_main.iml" group="XdUploadClient" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XdUploadClient_test.iml" filepath="$PROJECT_DIR$/.idea/modules/XdUploadClient_test.iml" group="XdUploadClient" />
+    </modules>
+  </component>
+</project>
