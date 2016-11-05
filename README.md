@@ -1,5 +1,5 @@
 ## XDUpdate
-#### Android 自动更新/在线参数/阿里云OSS一键上传更新
+#### Android 自动更新 / 在线参数 / 阿里云OSS一键上传更新 / 百川 HotFix 推送下发热补丁
 
 - 支持Android 7.0，不会因FileUriExposedException而无法安装下载的APK
 
