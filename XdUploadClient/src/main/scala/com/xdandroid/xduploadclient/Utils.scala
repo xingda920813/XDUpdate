@@ -30,7 +30,7 @@ object Utils {
     xdUpdateBean.size = getFileSize
     xdUpdateBean.versionName = apkMeta.getVersionName
     xdUpdateBean.url = Environment.sCdnDomain + Environment.sPathPrefix + Environment.sPackageName + ".apk"
-    xdUpdateBean.note = if (sArgs != null && sArgs.length >= 2) sArgs(1) else Environment.sReleaseNote
+    xdUpdateBean.note = Environment.sReleaseNote
     xdUpdateBean.md5 = getMd5ByFile
     xdUpdateBean
   }
