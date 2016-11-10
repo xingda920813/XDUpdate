@@ -67,6 +67,6 @@ object Utils {
 
   def readPropertiesAsString: String = {
     val file = if (sArgs != null && sArgs.length >= 1) new File(sArgs(0)) else new File("config.properties")
-    Source.fromFile(file).mkString
+    Source.fromFile(file, "UTF-8").mkString
   }
 }

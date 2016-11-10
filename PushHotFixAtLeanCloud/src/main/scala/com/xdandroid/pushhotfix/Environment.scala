@@ -11,7 +11,7 @@ import scala.io.Source
 object Environment {
 
   val properties = new Properties()
-  properties.load(new StringReader(Source.fromFile(new File("config.properties")).mkString))
+  properties.load(new StringReader(Source.fromFile(new File("config.properties"), "UTF-8").mkString))
 
   val sAction = properties.getProperty("action")
   val sVersionName = properties.getProperty("versionName")
