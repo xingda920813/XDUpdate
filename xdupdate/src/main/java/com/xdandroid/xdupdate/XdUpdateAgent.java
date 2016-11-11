@@ -148,7 +148,7 @@ public class XdUpdateAgent {
             int lastIgnoredCode = sp.getInt("versionCode", 0);
             String lastIgnoredName = sp.getString("versionName", "");
             long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
-            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode && versionName.equals(lastIgnoredName)) return;
+            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode/* && versionName.equals(lastIgnoredName)*/) return;
             final File file = new File(activity.getExternalCacheDir(), "update.apk");
             if (file.exists()) {
                 md5Subscription = XdUpdateUtils.getMd5ByFile(file, new Subscriber<String>() {
