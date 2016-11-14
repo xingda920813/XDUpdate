@@ -148,16 +148,4 @@ public class XdUpdateUtils {
         NetworkInfo networkInfo = ((ConnectivityManager) (context.getSystemService(Context.CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected() && (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET || networkInfo.getType() == 17 || networkInfo.getType() == -1 || networkInfo.getType() == 13 || networkInfo.getType() == 16);
     }
-
-    @SuppressWarnings("unchecked")
-    public static Map<Serializable, Serializable> toMap(InputStream is) throws IOException, ClassNotFoundException {
-        if (is == null) {
-            System.err.println("inputStream == null");
-            return null;
-        }
-        ObjectInputStream ois = new ObjectInputStream(is);
-        Map<Serializable, Serializable> map = (Map<Serializable, Serializable>) ois.readObject();
-        closeQuietly(ois);
-        return map;
-    }
 }

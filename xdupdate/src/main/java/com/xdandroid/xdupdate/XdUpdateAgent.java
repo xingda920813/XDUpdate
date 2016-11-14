@@ -138,17 +138,15 @@ public class XdUpdateAgent {
 
     protected void updateMatters(final XdUpdateBean updateBean, final Activity activity) {
         final int currentCode = XdUpdateUtils.getVersionCode(activity.getApplicationContext());
-        final String currentName = XdUpdateUtils.getVersionName(activity.getApplicationContext());
         final int versionCode = updateBean.versionCode;
         final String versionName = updateBean.versionName;
-        if (currentCode < versionCode/* || currentName.compareToIgnoreCase(versionName) < 0*/) {
+        if (currentCode < versionCode) {
             if (l != null) l.onUpdate(true, updateBean);
             final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_PRIVATE);
             long lastIgnoredDayBegin = sp.getLong("time", 0);
             int lastIgnoredCode = sp.getInt("versionCode", 0);
-            String lastIgnoredName = sp.getString("versionName", "");
             long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
-            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode/* && versionName.equals(lastIgnoredName)*/) return;
+            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode) return;
             final File file = new File(activity.getExternalCacheDir(), "update.apk");
             if (file.exists()) {
                 md5Subscription = XdUpdateUtils.getMd5ByFile(file, new Subscriber<String>() {

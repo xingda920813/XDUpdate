@@ -1,5 +1,5 @@
 ## XDUpdate
-#### Android 自动更新 / 在线参数 / 阿里云OSS一键上传更新 / 百川 HotFix 推送下发热补丁
+#### Android 自动更新 / 阿里云OSS一键上传更新 / 百川 HotFix 推送下发热补丁
 
 - 支持Android 7.0，不会因FileUriExposedException而无法安装下载的APK
 
@@ -112,8 +112,6 @@ Linux系统下，XdUpdateClient.sh需具有"可执行"文件系统权限。
 
 运行XdUpdateClient.jar时可以带一个参数，传入配置文件的路径，即可使用该配置文件，而不是默认的config.properties。
 
-(此时，可以再带第 2 个参数，用来 override 掉 properties 中的更新内容。)
-
 ```
 	java -jar XdUploadClient.jar my-project.properties
 ```
@@ -195,32 +193,3 @@ public void onReceive(Context context, Intent intent) {
 ```
 
 #### 3.发布热补丁后，运行 PushHotFixAtLeanCloud.cmd/PushHotFixAtLeanCloud.sh 进行推送
-
-## 在线参数
-#### 1.准备参数文件
-建立JavaSE项目，先将键值对存放在Map中，然后将Map传入下面的writeObject方法，得到参数文件。
-
-    public static void writeObject(Map<Serializable,Serializable> map) throws IOException {
-        File file = new File("C:\\Users\\${user-account-name}\\Desktop\\map.obj");     //指定文件生成路径
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
-        oos.writeObject(map);
-        oos.close();
-    }
-
-#### 2.得到在线参数
-    XdOnlineConfig onlineConfig = new XdOnlineConfig.Builder()
-                    .setDebugMode(false)                         //是否显示调试信息(默认:false)
-                    .setMapUrl("http://contoso.com/map.obj")     //参数文件的URL
-                    .setOnConfigAcquiredListener(new XdOnlineConfig.OnConfigAcquiredListener() {
-						//主线程回调，可执行UI操作
-                        public void onConfigAcquired(Map<Serializable, Serializable> map) {     
-                            System.out.println(map);             //成功，传入Map
-                        }
-
-                        public void onFailure(Throwable e) {
-                            e.printStackTrace();                 //失败，传入Throwable
-                        }                           
-                    }).build();
-    onlineConfig.getOnlineConfig();
-
-为防止内存泄漏，需调用onlineConfig.onDestroy().
