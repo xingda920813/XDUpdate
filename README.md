@@ -19,14 +19,17 @@ build.gradle中添加
 
 ## 自动更新
 #### 1.准备描述更新信息的JSON文件
-    {
-    "versionCode":4,                          //新版本的versionCode,int型
-    "versionName":"1.12",                     //新版本的versionName,String型
-    "url":"http://contoso.com/app.apk",       //APK下载地址,String型
-    "note":"Bug修复",                         //更新内容,String型
-    "md5":"D23788B6A1F95C8B6F7E442D6CA7536C", //32位MD5值,String型
-    "size":17962350                           //大小(字节),int型
-    }
+
+```
+{
+"versionCode":4,                          //新版本的versionCode,int型
+"versionName":"1.12",                     //新版本的versionName,String型
+"url":"http://contoso.com/app.apk",       //APK下载地址,String型
+"note":"Bug修复",                         //更新内容,String型
+"md5":"D23788B6A1F95C8B6F7E442D6CA7536C", //32位MD5值,String型
+"size":17962350                           //大小(字节),int型
+}
+```
 
 #### 2.构建XdUpdateAgent对象
     XdUpdateAgent updateAgent = new XdUpdateAgent.Builder()
