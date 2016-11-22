@@ -32,43 +32,47 @@ build.gradle中添加
 ```
 
 #### 2.构建XdUpdateAgent对象
-    XdUpdateAgent updateAgent = new XdUpdateAgent.Builder()
-                .setDebugMode(false)                          //是否显示调试信息(默认:false)
-								.setUpdateBean(XdUpdateBean updateBean)				//设置通过其他途径得到的XdUpdateBean
-                .setJsonUrl("http://contoso.com/update.json") //JSON文件的URL
-                .setAllow4G(true)                             //是否允许使用运营商网络检查更新(默认:false)
-                .setShowNotification(true)                    
-                //使用通知提示用户有更新，用户点击通知后弹出提示框，而不是检测到更新直接弹框(默认:true，仅对非强制检查更新有效)
-                .setOnUpdateListener(new XdUpdateAgent.OnUpdateListener() {
-						//取得更新信息JSON后的回调(可选)，回调在主线程，可执行UI操作，updateBean为JSON对应的数据结构  
-                        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean) {
-                            if (!needUpdate) Toast.makeText(context,"您的应用为最新版本",Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                .setDownloadText("立即下载")                   //可选，默认为左侧所示的文本
-                .setInstallText("立即安装(已下载)")
-                .setLaterText("以后再说")
-                .setHintText("版本更新")
-                .setDownloadingText("正在下载")
-								.setIconResId(R.mipmap.ic_launcher)           //设置在通知栏显示的通知图标资源ID(可选)
-                .build();
+
+```
+XdUpdateAgent updateAgent = new XdUpdateAgent
+.Builder()
+.setDebugMode(false)	//是否显示调试信息(可选,默认:false)
+.setUpdateBean(XdUpdateBean updateBean)	//设置通过其他途径得到的XdUpdateBean(2选1)
+.setJsonUrl("http://contoso.com/update.json")	//JSON文件的URL(2选1)
+.setShowDialogIfWifi(true)	//设置在WiFi下直接弹出AlertDialog而不使用Notification(可选,默认:false)
+.setOnUpdateListener((needUpdate, updateBean) -> {
+	//取得更新信息JSON后的回调(可选)，回调在主线程，可执行UI操作；
+	//needUpdate为是否需要更新，updateBean为JSON对应的数据结构
+	if (!needUpdate) Toast.makeText(context,"您的应用为最新版本",Toast.LENGTH_SHORT).show();
+})
+.setDownloadText("立即下载")	//可选,默认为左侧所示的文本
+.setInstallText("立即安装(已下载)")
+.setLaterText("以后再说")
+.setHintText("版本更新")
+.setDownloadingText("正在下载")
+.setIconResId(R.mipmap.ic_launcher)	//设置在通知栏显示的通知图标资源ID(可选,默认为应用图标)
+.build();
+```
 
 #### 3.检查更新
-适用于App入口的自动检查更新。默认策略下，若用户选择“以后再说”或者划掉了通知栏的更新提示，则**当天**对**该版本**不再提示更新，防止用户当天每次打开应用时都提示，不胜其烦。  
 
-    updateAgent.update(getActivity());
+```
+updateAgent.update(getActivity());
+```
 
-适用于应用“设置”页面的手动检查更新。此方法无视是否允许使用运营商网络和上面的默认策略，强制检查更新，有更新时直接弹出提示框。     
+适用于 App 入口的自动检查更新。默认策略下：
 
-    updateAgent.forceUpdate(getActivity());   
+1.若用户选择“以后再说”或者划掉了通知栏的更新提示，则**当天**对**该版本**不再提示更新，防止当天每次打开应用时都提示导致用户不胜其烦；
 
-弹出的更新对话框中只有“立即更新”按钮，没有“以后再说”，且不能取消对话框。用户体验不好，不推荐使用。     
+2.在任何网络环境下，均推送一条通知栏更新提示，点击通知后弹出对话框，防止直接弹框带来不好的用户体验。
 
-    updateAgent.forceUpdateUncancelable(getActivity());   
+可调用 XdUpdateAgent.Builder.setShowDialogIfWifi(true) 设置在 WiFi 下直接弹出更新提示框 (AlertDialog) 而不使用 Notification 的形式。
 
-为防止内存泄漏，需调用updateAgent.onDestroy().
+```
+updateAgent.forceUpdate(getActivity());
+```
 
-可通过updateAgent.getDialog()得到更新提示框的AlertDialog.
+适用于应用“设置”页面的手动检查更新。此方法无视上面的 2 条默认策略，如果有更新，总是对用户进行提示，且总是使用提示框 (AlertDialog) 的形式。
 
 #### 4.若不想使用JSON文件，可传入由其他途径得到的XdUpdateBean
 

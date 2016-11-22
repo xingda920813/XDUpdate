@@ -24,66 +24,36 @@ import rx.schedulers.*;
  */
 public class XdUpdateAgent {
 
-    protected XdUpdateAgent() {
-    }
+    protected XdUpdateAgent() {}
 
-    protected static XdUpdateAgent instance;
+    protected static XdUpdateAgent sInstance;
 
-    protected boolean forceUpdate;
-    protected boolean uncancelable;
-    protected boolean allow4G;
-    protected XdUpdateBean updateBeanLocallyProvided;
-    protected String jsonUrl;
-    protected int iconResId;
-    protected boolean showNotification;
-    protected OnUpdateListener l;
-    protected Subscription md5Subscription, subscription;
-    protected AlertDialog dialog;
-
-    public AlertDialog getDialog() {
-        return dialog;
-    }
-
-    public XdUpdateAgent setJsonUrl(String jsonUrl) {
-        instance.jsonUrl = jsonUrl;
-        return instance;
-    }
-
-    public void onDestroy() {
-        if (dialog != null) {
-            try {
-                dialog.dismiss();
-            } catch (Throwable ignored) {
-            }
-        }
-        if (md5Subscription != null) md5Subscription.unsubscribe();
-        if (subscription != null) subscription.unsubscribe();
-    }
+    protected boolean mForceUpdate;
+    protected XdUpdateBean mUpdateBeanProvided;
+    protected String mJsonUrl;
+    protected int mIconResId;
+    protected boolean mShowDialogIfWifi;
+    protected OnUpdateListener mListener;
 
     public void forceUpdate(Activity activity) {
-        forceUpdate = true;
+        mForceUpdate = true;
         update(activity);
     }
 
-    public void forceUpdateUncancelable(Activity activity) {
-        uncancelable = true;
-        forceUpdate(activity);
-    }
-
     public void update(final Activity activity) {
-        if (!forceUpdate && !allow4G && !XdUpdateUtils.isWifi(activity)) return;
-        if (updateBeanLocallyProvided == null && TextUtils.isEmpty(jsonUrl)) {
-            System.err.println("Please set updateBean or jsonUrl.");
+        if (mUpdateBeanProvided == null && TextUtils.isEmpty(mJsonUrl)) {
+            System.err.println("Please set updateBean or mJsonUrl.");
+            mForceUpdate = false;
             return;
         }
-        if (updateBeanLocallyProvided != null) {
-            updateMatters(updateBeanLocallyProvided, activity);
+        if (mUpdateBeanProvided != null) {
+            updateMatters(mUpdateBeanProvided, activity);
         } else {
-            subscription = Observable.create(new Observable.OnSubscribe<Response>() {
+            Observable.create(new Observable.OnSubscribe<Response>() {
                 @Override
                 public void call(Subscriber<? super Response> subscriber) {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url(jsonUrl).build();
+                    Request request = new Request.Builder().url(mJsonUrl).build();
                     Response response;
                     try {
                         response = client.newCall(request).execute();
@@ -92,19 +62,19 @@ public class XdUpdateAgent {
                         } else {
                             subscriber.onError(new IOException(response.code() + ": " + response.body().string()));
                         }
-                    } catch (Throwable e) {
-                        subscriber.onError(e);
+                    } catch (Throwable t) {
+                        subscriber.onError(t);
                     }
                 }
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     new Subscriber<Response>() {
 
-                        public void onCompleted() {
-                        }
+                        public void onCompleted() {}
 
                         @Override
                         public void onError(Throwable e) {
-                            if (XdConstants.debugMode) e.printStackTrace();
+                            e.printStackTrace();
+                            mForceUpdate = false;
                         }
 
                         @Override
@@ -112,8 +82,9 @@ public class XdUpdateAgent {
                             String responseBody;
                             try {
                                 responseBody = response.body().string();
-                            } catch (Throwable e) {
-                                if (XdConstants.debugMode) e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mForceUpdate = false;
                                 return;
                             }
                             if (XdConstants.debugMode) System.out.println(responseBody);
@@ -126,8 +97,9 @@ public class XdUpdateAgent {
                                 xdUpdateBean.url = jsonObject.getString("url");
                                 xdUpdateBean.note = jsonObject.getString("note");
                                 xdUpdateBean.md5 = jsonObject.getString("md5");
-                            } catch (JSONException e) {
-                                if (XdConstants.debugMode) e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mForceUpdate = false;
                                 return;
                             }
                             updateMatters(xdUpdateBean, activity);
@@ -141,36 +113,38 @@ public class XdUpdateAgent {
         final int versionCode = updateBean.versionCode;
         final String versionName = updateBean.versionName;
         if (currentCode < versionCode) {
-            if (l != null) l.onUpdate(true, updateBean);
+            if (mListener != null) mListener.onUpdate(true, updateBean);
             final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_PRIVATE);
             long lastIgnoredDayBegin = sp.getLong("time", 0);
             int lastIgnoredCode = sp.getInt("versionCode", 0);
             long todayBegin = XdUpdateUtils.dayBegin(new Date()).getTime();
-            if (!forceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode) return;
+            if (!mForceUpdate && todayBegin == lastIgnoredDayBegin && versionCode == lastIgnoredCode) {
+                mForceUpdate = false;
+                return;
+            }
             final File file = new File(activity.getExternalCacheDir(), "update.apk");
             if (file.exists()) {
-                md5Subscription = XdUpdateUtils.getMd5ByFile(file, new Subscriber<String>() {
+                XdUpdateUtils.getMd5ByFile(file, new Subscriber<String>() {
 
                     boolean fileExists = false;
 
-                    public void onCompleted() {
-                    }
+                    public void onCompleted() {}
 
                     @Override
                     public void onError(Throwable e) {
                         file.delete();
-                        if (XdConstants.debugMode) e.printStackTrace();
+                        e.printStackTrace();
                         proceedToUI(sp, file, fileExists, activity, versionName, updateBean, versionCode);
                     }
 
                     @Override
-                    public void onNext(String Md5JustDownloaded) {
-                        String Md5InUpdateBean = updateBean.md5;
-                        if (Md5JustDownloaded.equalsIgnoreCase(Md5InUpdateBean)) {
+                    public void onNext(String md5JustDownloaded) {
+                        String md5InUpdateBean = updateBean.md5;
+                        if (md5JustDownloaded.equalsIgnoreCase(md5InUpdateBean)) {
                             fileExists = true;
                         } else {
                             file.delete();
-                            if (XdConstants.debugMode) System.err.println("Md5 dismatch. Md5JustDownloaded: " + Md5JustDownloaded + ". Md5InUpdateBean: " + Md5InUpdateBean + ".");
+                            System.err.println("MD5 mismatch. md5JustDownloaded: " + md5JustDownloaded + ". md5InUpdateBean: " + md5InUpdateBean + ".");
                         }
                         proceedToUI(sp, file, fileExists, activity, versionName, updateBean, versionCode);
                     }
@@ -179,17 +153,16 @@ public class XdUpdateAgent {
                 proceedToUI(sp, file, false, activity, versionName, updateBean, versionCode);
             }
         } else {
-            if (l != null) l.onUpdate(false, updateBean);
+            if (mListener != null) mListener.onUpdate(false, updateBean);
         }
-        forceUpdate = false;
-        uncancelable = false;
+        mForceUpdate = false;
     }
 
     protected void proceedToUI(SharedPreferences sp, File file, boolean fileExists, Activity activity, String versionName, XdUpdateBean xdUpdateBean, int versionCode) {
-        if (showNotification && !forceUpdate) {
-            showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
-        } else {
+        if (mForceUpdate || (mShowDialogIfWifi && XdUpdateUtils.isWifi(activity.getApplicationContext()))) {
             showAlertDialog(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
+        } else {
+            showNotification(sp, file, fileExists, activity, versionName, xdUpdateBean, versionCode);
         }
     }
 
@@ -210,7 +183,7 @@ public class XdUpdateAgent {
                   .apply();
             }
         }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
-        int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(activity.getApplicationContext());
+        int smallIconResId = mIconResId > 0 ? mIconResId : XdUpdateUtils.getAppIconResId(activity.getApplicationContext());
         Notification.Builder builder = new Notification.Builder(activity)
                 .setAutoCancel(true)
                 .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " +  versionName + " " + XdConstants.hintText)
@@ -233,9 +206,8 @@ public class XdUpdateAgent {
                 .Builder(activity)
                 .setCancelable(false)
                 .setTitle(versionName + " " + XdConstants.hintText)
-                .setMessage(xdUpdateBean.note);
-        if (!uncancelable) {
-            builder.setNegativeButton(XdConstants.laterText, new DialogInterface.OnClickListener() {
+                .setMessage(xdUpdateBean.note)
+                .setNegativeButton(XdConstants.laterText, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     sp.edit()
                       .putLong("time", XdUpdateUtils.dayBegin(new Date()).getTime())
@@ -244,7 +216,6 @@ public class XdUpdateAgent {
                       .apply();
                 }
             });
-        }
         if (fileExists) {
             builder.setPositiveButton(XdConstants.installText, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -261,51 +232,44 @@ public class XdUpdateAgent {
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(activity, XdUpdateService.class);
                     intent.putExtra("xdUpdateBean", xdUpdateBean);
-                    intent.putExtra("appIcon", iconResId);
+                    intent.putExtra("appIcon", mIconResId);
                     activity.startService(intent);
                 }
             });
         }
-        dialog = builder.create();
-        dialog.show();
+        builder.show();
     }
 
     public static class Builder {
 
-        protected XdUpdateBean mUpdateBean;
-        protected String mJsonUrl;
-        protected boolean mAllow4G;
-        protected int mIconResId;
-        protected boolean mShowNotification = true;
-        protected OnUpdateListener mListener;
+        protected XdUpdateBean updateBeanProvided;
+        protected String jsonUrl;
+        protected int iconResId;
+        protected boolean showDialogIfWifi;
+        protected OnUpdateListener l;
 
-        public Builder setUpdateBean(XdUpdateBean updateBean) {
-            mUpdateBean = updateBean;
+        public Builder setUpdateBean(XdUpdateBean updateBeanProvided) {
+            this.updateBeanProvided = updateBeanProvided;
             return this;
         }
 
         public Builder setJsonUrl(String jsonUrl) {
-            mJsonUrl = jsonUrl;
-            return this;
-        }
-
-        public Builder setAllow4G(boolean allow4G) {
-            mAllow4G = allow4G;
+            this.jsonUrl = jsonUrl;
             return this;
         }
 
         public Builder setIconResId(int iconResId) {
-            mIconResId = iconResId;
+            this.iconResId = iconResId;
             return this;
         }
 
-        public Builder setShowNotification(boolean showNotification) {
-            mShowNotification = showNotification;
+        public Builder setShowDialogIfWifi(boolean showDialogIfWifi) {
+            this.showDialogIfWifi = showDialogIfWifi;
             return this;
         }
 
         public Builder setOnUpdateListener(OnUpdateListener l) {
-            mListener = l;
+            this.l = l;
             return this;
         }
 
@@ -340,17 +304,16 @@ public class XdUpdateAgent {
         }
 
         public XdUpdateAgent build() {
-            if (instance == null) instance = new XdUpdateAgent();
-            if (mUpdateBean != null) {
-                instance.updateBeanLocallyProvided = mUpdateBean;
+            if (sInstance == null) sInstance = new XdUpdateAgent();
+            if (updateBeanProvided != null) {
+                sInstance.mUpdateBeanProvided = updateBeanProvided;
             } else {
-                instance.jsonUrl = mJsonUrl;
+                sInstance.mJsonUrl = jsonUrl;
             }
-            instance.allow4G = mAllow4G;
-            instance.iconResId = mIconResId;
-            instance.showNotification = mShowNotification;
-            instance.l = mListener;
-            return instance;
+            sInstance.mIconResId = iconResId;
+            sInstance.mShowDialogIfWifi = showDialogIfWifi;
+            sInstance.mListener = l;
+            return sInstance;
         }
     }
 

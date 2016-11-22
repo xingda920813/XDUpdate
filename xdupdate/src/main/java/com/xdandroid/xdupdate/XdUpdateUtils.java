@@ -22,16 +22,11 @@ import rx.schedulers.*;
  */
 public class XdUpdateUtils {
 
-    protected XdUpdateUtils() {
-    }
+    protected XdUpdateUtils() {}
 
     public static void closeQuietly(Closeable c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (Throwable ignored) {
-            }
-        }
+        if (c == null) return;
+        try {c.close();} catch (Throwable ignored) {}
     }
 
     public static Date dayBegin(Date date) {
@@ -46,9 +41,7 @@ public class XdUpdateUtils {
 
     public static String formatToMegaBytes(long bytes) {
         double megaBytes = bytes / 1048576.0;
-        if (megaBytes < 1) {
-            return new DecimalFormat("0.0").format(megaBytes);
-        }
+        if (megaBytes < 1) return new DecimalFormat("0.0").format(megaBytes);
         return new DecimalFormat("#.0").format(megaBytes);
     }
 
@@ -64,8 +57,8 @@ public class XdUpdateUtils {
                     md5.update(byteBuffer);
                     BigInteger bi = new BigInteger(1, md5.digest());
                     subscriber.onNext(String.format("%032x", bi));
-                } catch (Throwable e) {
-                    subscriber.onError(e);
+                } catch (Throwable t) {
+                    subscriber.onError(t);
                 } finally {
                     closeQuietly(fis);
                 }
@@ -84,64 +77,66 @@ public class XdUpdateUtils {
             md5.update(byteBuffer);
             BigInteger bi = new BigInteger(1, md5.digest());
             return String.format("%032x", bi);
-        } catch (Throwable e) {
-            if (XdConstants.debugMode) e.printStackTrace();
-            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return file.toString();
         } finally {
             closeQuietly(fis);
         }
     }
 
     public static String getApplicationName(Context app) {
-        PackageManager packageManager;
-        ApplicationInfo applicationInfo;
+        PackageManager pm;
+        ApplicationInfo ai;
         try {
-            packageManager = app.getPackageManager();
-            applicationInfo = packageManager.getApplicationInfo(app.getPackageName(), 0);
-            return (String) packageManager.getApplicationLabel(applicationInfo);
-        } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.debugMode) e.printStackTrace();
-            return "";
+            pm = app.getPackageManager();
+            ai = pm.getApplicationInfo(app.getPackageName(), 0);
+            return pm.getApplicationLabel(ai).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return app.getPackageName();
         }
     }
 
     public static int getVersionCode(Context app) {
-        int versionCode = 0;
-        PackageManager manager = app.getPackageManager();
-        PackageInfo info;
+        PackageManager pm = app.getPackageManager();
+        PackageInfo pi;
         try {
-            info = manager.getPackageInfo(app.getPackageName(), 0);
-            versionCode = info.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.debugMode) e.printStackTrace();
+            pi = pm.getPackageInfo(app.getPackageName(), 0);
+            return pi.versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 1;
         }
-        return versionCode;
     }
 
     public static String getVersionName(Context app) {
-        String versionName = "";
-        PackageManager manager = app.getPackageManager();
-        PackageInfo info;
+        PackageManager pm = app.getPackageManager();
+        PackageInfo pi;
         try {
-            info = manager.getPackageInfo(app.getPackageName(), 0);
-            versionName = info.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.debugMode) e.printStackTrace();
+            pi = pm.getPackageInfo(app.getPackageName(), 0);
+            return pi.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return app.getPackageName();
         }
-        return versionName;
     }
 
     public static int getAppIconResId(Context app) {
-        int id = 0;
         PackageManager pm = app.getPackageManager();
-        String pkg = app.getPackageName();
+        String packageName = app.getPackageName();
         try {
-            ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
-            id = ai.icon;
-        } catch (PackageManager.NameNotFoundException e) {
-            if (XdConstants.debugMode) e.printStackTrace();
+            ApplicationInfo ai = pm.getApplicationInfo(packageName, 0);
+            return ai.icon;
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                return app.getResources().getIdentifier("sym_def_app_icon", "mipmap", "android");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return 0;
+            }
         }
-        return id;
     }
 
     public static boolean isWifi(Context context) {

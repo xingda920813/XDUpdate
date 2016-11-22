@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/xingda920813/XDUpdate'
     gitUrl = 'https://github.com/xingda920813/XDUpdate.git'
 
-    libraryVersion = '1.2.7'
+    libraryVersion = '1.3.0'
 
     developerId = 'xingda920813'
     developerName = 'Da Xing'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 25
-        versionName "1.2.7"
+        versionCode 26
+        versionName "1.3.0"
     }
     buildTypes {
         release {
@@ -54,15 +54,15 @@ dependencies {
 }
 
 task makeJar(type: Copy) {
-    delete 'build/libs/XDUpdate-1.2.7.jar'
+    delete 'build/libs/XDUpdate-1.3.0.jar'
     from('build/intermediates/bundles/release/')
     into('build/libs/')
     include('classes.jar')
-    rename ('classes.jar', 'XDUpdate-1.2.7.jar')
+    rename ('classes.jar', 'XDUpdate-1.3.0.jar')
 }
 
 makeJar.dependsOn(build)
 
-// Place it at the end of the file
+// Place it at the end of the mFile
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'bintrayv1.gradle'
