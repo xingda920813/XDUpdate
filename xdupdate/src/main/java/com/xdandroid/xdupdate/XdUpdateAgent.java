@@ -16,7 +16,6 @@ import java.util.*;
 import okhttp3.*;
 import rx.Observable;
 import rx.*;
-import rx.android.schedulers.*;
 import rx.schedulers.*;
 
 /**
@@ -27,6 +26,8 @@ public class XdUpdateAgent {
     protected XdUpdateAgent() {}
 
     protected static XdUpdateAgent sInstance;
+
+    protected Handler mMainThreadHandler = new Handler();
 
     protected boolean mForceUpdate;
     protected XdUpdateBean mUpdateBeanProvided;
@@ -66,7 +67,7 @@ public class XdUpdateAgent {
                         subscriber.onError(t);
                     }
                 }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+            }).subscribeOn(Schedulers.io()).subscribe(
                     new Subscriber<Response>() {
 
                         public void onCompleted() {}
@@ -113,7 +114,7 @@ public class XdUpdateAgent {
         final int versionCode = updateBean.versionCode;
         final String versionName = updateBean.versionName;
         if (currentCode < versionCode) {
-            if (mListener != null) mListener.onUpdate(true, updateBean);
+            if (mListener != null) mListener.onUpdateIoThread(true, updateBean);
             final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_PRIVATE);
             long lastIgnoredDayBegin = sp.getLong("time", 0);
             int lastIgnoredCode = sp.getInt("versionCode", 0);
@@ -153,7 +154,7 @@ public class XdUpdateAgent {
                 proceedToUI(sp, file, false, activity, versionName, updateBean, versionCode);
             }
         } else {
-            if (mListener != null) mListener.onUpdate(false, updateBean);
+            if (mListener != null) mListener.onUpdateIoThread(false, updateBean);
         }
         mForceUpdate = false;
     }
@@ -317,7 +318,16 @@ public class XdUpdateAgent {
         }
     }
 
-    public interface OnUpdateListener {
-        public void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
+    public abstract class OnUpdateListener {
+
+        public abstract void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
+
+        public void onUpdateIoThread(final boolean needUpdate, final XdUpdateBean updateBean) {
+            mMainThreadHandler.post(new Runnable() {
+                public void run() {
+                    onUpdate(needUpdate, updateBean);
+                }
+            });
+        }
     }
 }
