@@ -16,6 +16,7 @@ import java.util.*;
 import okhttp3.*;
 import rx.Observable;
 import rx.*;
+import rx.android.schedulers.*;
 import rx.schedulers.*;
 
 /**
@@ -26,8 +27,6 @@ public class XdUpdateAgent {
     protected XdUpdateAgent() {}
 
     protected static XdUpdateAgent sInstance;
-
-    protected Handler mMainThreadHandler = new Handler();
 
     protected boolean mForceUpdate;
     protected XdUpdateBean mUpdateBeanProvided;
@@ -50,16 +49,16 @@ public class XdUpdateAgent {
         if (mUpdateBeanProvided != null) {
             updateMatters(mUpdateBeanProvided, activity);
         } else {
-            Observable.create(new Observable.OnSubscribe<Response>() {
+            Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
-                public void call(Subscriber<? super Response> subscriber) {
+                public void call(Subscriber<? super String> subscriber) {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder().url(mJsonUrl).build();
                     Response response;
                     try {
                         response = client.newCall(request).execute();
                         if (response.isSuccessful()) {
-                            subscriber.onNext(response);
+                            subscriber.onNext(response.body().string());
                         } else {
                             subscriber.onError(new IOException(response.code() + ": " + response.body().string()));
                         }
@@ -67,8 +66,8 @@ public class XdUpdateAgent {
                         subscriber.onError(t);
                     }
                 }
-            }).subscribeOn(Schedulers.io()).subscribe(
-                    new Subscriber<Response>() {
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                    new Subscriber<String>() {
 
                         public void onCompleted() {}
 
@@ -79,15 +78,7 @@ public class XdUpdateAgent {
                         }
 
                         @Override
-                        public void onNext(Response response) {
-                            String responseBody;
-                            try {
-                                responseBody = response.body().string();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                mForceUpdate = false;
-                                return;
-                            }
+                        public void onNext(String responseBody) {
                             if (XdConstants.debugMode) System.out.println(responseBody);
                             final XdUpdateBean xdUpdateBean = new XdUpdateBean();
                             try {
@@ -114,7 +105,7 @@ public class XdUpdateAgent {
         final int versionCode = updateBean.versionCode;
         final String versionName = updateBean.versionName;
         if (currentCode < versionCode) {
-            if (mListener != null) mListener.onUpdateIoThread(true, updateBean);
+            if (mListener != null) mListener.onUpdate(true, updateBean);
             final SharedPreferences sp = activity.getSharedPreferences("update", Context.MODE_PRIVATE);
             long lastIgnoredDayBegin = sp.getLong("time", 0);
             int lastIgnoredCode = sp.getInt("versionCode", 0);
@@ -154,7 +145,7 @@ public class XdUpdateAgent {
                 proceedToUI(sp, file, false, activity, versionName, updateBean, versionCode);
             }
         } else {
-            if (mListener != null) mListener.onUpdateIoThread(false, updateBean);
+            if (mListener != null) mListener.onUpdate(false, updateBean);
         }
         mForceUpdate = false;
     }
@@ -318,16 +309,7 @@ public class XdUpdateAgent {
         }
     }
 
-    public abstract class OnUpdateListener {
-
-        public abstract void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
-
-        public void onUpdateIoThread(final boolean needUpdate, final XdUpdateBean updateBean) {
-            mMainThreadHandler.post(new Runnable() {
-                public void run() {
-                    onUpdate(needUpdate, updateBean);
-                }
-            });
-        }
+    public interface OnUpdateListener {
+        void onUpdate(boolean needUpdate, XdUpdateBean updateBean);
     }
 }
