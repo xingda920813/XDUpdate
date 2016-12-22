@@ -176,11 +176,12 @@ public class XdUpdateAgent {
             }
         }, new IntentFilter("com.xdandroid.xdupdate.IgnoreUpdate"));
         int smallIconResId = mIconResId > 0 ? mIconResId : XdUpdateUtils.getAppIconResId(activity.getApplicationContext());
+        String title = XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " + versionName + " " + XdConstants.hintText;
         Notification.Builder builder = new Notification.Builder(activity)
                 .setAutoCancel(true)
-                .setTicker(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " +  versionName + " " + XdConstants.hintText)
+                .setTicker(title)
                 .setSmallIcon(smallIconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(activity.getApplicationContext()) + " " + versionName + " " + XdConstants.hintText)
+                .setContentTitle(title)
                 .setContentText(xdUpdateBean.note)
                 .setContentIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 1, new Intent("com.xdandroid.xdupdate.UpdateDialog"), PendingIntent.FLAG_CANCEL_CURRENT))
                 .setDeleteIntent(PendingIntent.getBroadcast(activity.getApplicationContext(), 2, new Intent("com.xdandroid.xdupdate.IgnoreUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
@@ -211,6 +212,11 @@ public class XdUpdateAgent {
         if (fileExists) {
             builder.setPositiveButton(XdConstants.installText, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                                .detectFileUriExposure()
+                                .penaltyLog()
+                                .build());
                     Uri uri = Uri.fromFile(file);
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setDataAndType(uri, "application/vnd.android.package-archive");

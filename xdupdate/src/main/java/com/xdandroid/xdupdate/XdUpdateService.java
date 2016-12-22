@@ -18,8 +18,8 @@ import rx.schedulers.*;
  */
 public class XdUpdateService extends Service {
 
-    protected Notification.Builder mNBuilder;
-    protected NotificationManager mNM;
+    protected Notification.Builder mBuilder;
+    protected NotificationManager mNotificationManager;
     protected volatile int mFileLength;
     protected volatile int mLength;
     protected DeleteReceiver mDeleteReceiver;
@@ -35,7 +35,7 @@ public class XdUpdateService extends Service {
         public void onReceive(Context context, Intent intent) {
             mInterrupted = true;
             handler.sendEmptyMessage(TYPE_FINISHED);
-            mNM.cancel(2);
+            mNotificationManager.cancel(2);
             if (mFile != null && mFile.exists()) mFile.delete();
             stopSelf();
         }
@@ -50,10 +50,10 @@ public class XdUpdateService extends Service {
             switch (msg.what) {
                 case TYPE_DOWNLOADING:
                     if (mInterrupted) {
-                        mNM.cancel(2);
+                        mNotificationManager.cancel(2);
                     } else {
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
-                        mNM.notify(2, mNBuilder
+                        mNotificationManager.notify(2, mBuilder
                                 .setContentText(XdUpdateUtils.formatToMegaBytes(mLength) + "M/" +
                                         XdUpdateUtils.formatToMegaBytes(mFileLength) + "M")
                                 .setProgress(mFileLength, mLength, false)
@@ -62,7 +62,7 @@ public class XdUpdateService extends Service {
                     }
                     break;
                 case TYPE_FINISHED:
-                    mNM.cancel(2);
+                    mNotificationManager.cancel(2);
                     break;
             }
         }
@@ -85,16 +85,21 @@ public class XdUpdateService extends Service {
         mDeleteReceiver = new DeleteReceiver();
         getApplicationContext().registerReceiver(mDeleteReceiver, new IntentFilter("com.xdandroid.xdupdate.DeleteUpdate"));
         int smallIconResId = iconResId > 0 ? iconResId : XdUpdateUtils.getAppIconResId(getApplicationContext());
-        mNBuilder = new Notification.Builder(XdUpdateService.this)
+        String title = XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText + "...";
+        mBuilder = new Notification.Builder(XdUpdateService.this)
                 .setProgress(0, 0, false)
                 .setAutoCancel(false)
-                .setTicker(XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText)
+                .setTicker(title)
                 .setSmallIcon(smallIconResId)
-                .setContentTitle(XdUpdateUtils.getApplicationName(getApplicationContext()) + " " + xdUpdateBean.versionName + " " + XdConstants.downloadingText + "...")
+                .setContentTitle(title)
                 .setContentText("")
                 .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) mNBuilder.setShowWhen(true);
-        mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setShowWhen(true);
+            mBuilder.setVibrate(new long[0]);
+            mBuilder.setPriority(Notification.PRIORITY_HIGH);
+        }
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mSubscription = Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
@@ -147,12 +152,11 @@ public class XdUpdateService extends Service {
                                 String md5JustDownloaded = XdUpdateUtils.getMd5ByFile(mFile);
                                 String md5InUpdateBean = xdUpdateBean.md5;
                                 if (md5JustDownloaded.equalsIgnoreCase(md5InUpdateBean)) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                                         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                                                 .detectFileUriExposure()
                                                 .penaltyLog()
                                                 .build());
-                                    }
                                     Uri uri = Uri.fromFile(mFile);
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setDataAndType(uri, "application/vnd.android.package-archive");
