@@ -33,50 +33,7 @@
           <activation />
         </task>
         <projects_view>
-          <tree_state>
-            <PATH>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.ExternalProjectsStructure$RootNode" />
-              </PATH_ELEMENT>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="XdUploadClient" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.ProjectNode" />
-              </PATH_ELEMENT>
-            </PATH>
-            <PATH>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.ExternalProjectsStructure$RootNode" />
-              </PATH_ELEMENT>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="XdUploadClient" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.ProjectNode" />
-              </PATH_ELEMENT>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="Tasks" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.TasksNode" />
-              </PATH_ELEMENT>
-            </PATH>
-            <PATH>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.ExternalProjectsStructure$RootNode" />
-              </PATH_ELEMENT>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="XdUploadClient" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.ProjectNode" />
-              </PATH_ELEMENT>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="Tasks" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.TasksNode" />
-              </PATH_ELEMENT>
-              <PATH_ELEMENT>
-                <option name="myItemId" value="build" />
-                <option name="myItemType" value="com.intellij.openapi.externalSystem.view.TasksNode$1" />
-              </PATH_ELEMENT>
-            </PATH>
-          </tree_state>
+          <tree_state />
         </projects_view>
       </state>
     </system>
@@ -97,12 +54,12 @@
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
       <map>
-        <entry key="$PROJECT_DIR$" value="C:\Users\XingDa\Documents\gradle-3.1" />
+        <entry key="$PROJECT_DIR$" value="$USER_HOME$/Programs/gradle-3.2.1" />
       </map>
     </option>
     <option name="myGradleVersions">
       <map>
-        <entry key="$PROJECT_DIR$" value="3.1" />
+        <entry key="$PROJECT_DIR$" value="3.2.1" />
       </map>
     </option>
     <option name="availableProjects">
@@ -149,6 +106,11 @@
                 <option name="description" value="Assembles main classes." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="classes" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the dependent components of components in root project 'XdUploadClient'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="dependentComponents" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Displays all buildscript dependencies declared in root project 'XdUploadClient'." />
@@ -282,7 +244,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="2956526063496" />
+        <entry key="$PROJECT_DIR$" value="2960705528975" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -304,138 +266,138 @@
               <option name="name" value="XdUploadClient" />
               <option name="projectBuildClasspath">
                 <list>
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/announce" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/antlr" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/base-services" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/base-services-groovy" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/build-comparison" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/build-init" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/cli" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/code-quality" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/composite-builds" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/core" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/dependency-management" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/diagnostics" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/ear" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/ide" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/ide-native" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/ide-play" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/installation-beacon" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/internal-android-performance-testing" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/internal-integ-testing" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/internal-performance-testing" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/internal-testing" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/ivy" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/jacoco" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/javascript" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/jetty" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/jvm-services" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/language-groovy" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/language-java" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/language-jvm" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/language-native" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/language-scala" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/launcher" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/logging" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/maven" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/messaging" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/model-core" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/model-groovy" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/native" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/open-api" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/osgi" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/platform-base" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/platform-jvm" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/platform-native" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/platform-play" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/plugin-development" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/plugin-use" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/plugins" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/process-services" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/publish" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/reporting" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/resources" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/resources-http" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/resources-s3" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/resources-sftp" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/scala" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/signing" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/task-cache-http" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/test-kit" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/testing-base" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/testing-jvm" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/testing-native" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/tooling-api" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/tooling-api-builders" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/ui" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/src/wrapper" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/ant-1.9.6.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/ant-launcher-1.9.6.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-base-services-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-base-services-groovy-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-cli-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-core-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-docs-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-installation-beacon-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-jvm-services-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-launcher-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-logging-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-messaging-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-model-core-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-model-groovy-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-native-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-open-api-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-process-services-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-resources-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-script-kotlin-0.3.2.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-tooling-api-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-ui-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/gradle-wrapper-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/groovy-all-2.4.7.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-announce-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-antlr-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-build-comparison-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-build-init-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-code-quality-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-composite-builds-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-dependency-management-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-diagnostics-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-ear-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-ide-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-ide-native-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-ide-play-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-ivy-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-jacoco-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-javascript-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-jetty-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-language-groovy-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-language-java-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-language-jvm-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-language-native-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-language-scala-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-maven-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-osgi-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-platform-base-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-platform-jvm-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-platform-native-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-platform-play-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-plugin-development-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-plugin-use-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-plugins-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-publish-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-reporting-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-resources-http-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-resources-s3-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-resources-sftp-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-scala-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-signing-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-task-cache-http-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-test-kit-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-testing-base-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-testing-jvm-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-testing-native-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/gradle-tooling-api-builders-3.1.jar" />
-                  <option value="$PROJECT_DIR$/../../gradle-3.1/lib/plugins/ivy-2.2.0.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/announce" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/antlr" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/base-services" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/base-services-groovy" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/build-comparison" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/build-init" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/cli" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/code-quality" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/composite-builds" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/core" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/dependency-management" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/diagnostics" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/ear" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/ide" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/ide-native" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/ide-play" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/installation-beacon" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/internal-android-performance-testing" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/internal-integ-testing" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/internal-performance-testing" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/internal-testing" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/ivy" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/jacoco" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/javascript" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/jetty" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/jvm-services" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/language-groovy" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/language-java" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/language-jvm" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/language-native" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/language-scala" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/launcher" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/logging" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/maven" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/messaging" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/model-core" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/model-groovy" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/native" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/open-api" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/osgi" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/platform-base" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/platform-jvm" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/platform-native" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/platform-play" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/plugin-development" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/plugin-use" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/plugins" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/process-services" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/publish" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/reporting" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/resources" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/resources-http" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/resources-s3" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/resources-sftp" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/scala" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/signing" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/task-cache-http" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/test-kit" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/testing-base" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/testing-jvm" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/testing-native" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/tooling-api" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/tooling-api-builders" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/ui" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/src/wrapper" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/ant-1.9.6.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/ant-launcher-1.9.6.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-base-services-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-base-services-groovy-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-cli-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-core-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-docs-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-installation-beacon-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-jvm-services-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-launcher-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-logging-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-messaging-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-model-core-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-model-groovy-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-native-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-open-api-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-process-services-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-resources-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-script-kotlin-0.4.0.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-tooling-api-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-ui-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/gradle-wrapper-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/groovy-all-2.4.7.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-announce-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-antlr-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-build-comparison-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-build-init-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-code-quality-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-composite-builds-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-dependency-management-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-diagnostics-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-ear-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-ide-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-ide-native-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-ide-play-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-ivy-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-jacoco-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-javascript-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-jetty-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-language-groovy-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-language-java-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-language-jvm-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-language-native-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-language-scala-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-maven-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-osgi-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-platform-base-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-platform-jvm-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-platform-native-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-platform-play-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-plugin-development-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-plugin-use-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-plugins-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-publish-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-reporting-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-resources-http-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-resources-s3-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-resources-sftp-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-scala-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-signing-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-task-cache-http-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-test-kit-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-testing-base-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-testing-jvm-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-testing-native-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/gradle-tooling-api-builders-3.2.1.jar" />
+                  <option value="$USER_HOME$/Programs/gradle-3.2.1/lib/plugins/ivy-2.2.0.jar" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -458,10 +420,11 @@
         <option value="$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/PutObjectProgressListener.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Environment.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Implicits.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/OSSMain.scala" />
         <option value="$PROJECT_DIR$/src/main/java/com/xdandroid/xduploadclient/Main.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Utils.scala" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.1/25088b0c29e5f4547dabc148a22af949d1d9ca8c/scala-library-2.12.1-sources.jar!/scala/Array.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/OSSMain.scala" />
       </list>
     </option>
   </component>
@@ -487,7 +450,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -518,45 +482,17 @@
               <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="XdUploadClient" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="XdUploadClient" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="META-INF" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../PushHotFixAtLeanCloud" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
-    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
   </component>
   <component name="RunManager" selected="Gradle.XdUploadClient [clean]">
     <configuration default="false" name="XdUploadClient [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -628,61 +564,6 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="XdUploadClient_main" />
       <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
-      <module name="" />
-      <option name="DEPLOY" value="true" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="DEBUGGER_TYPE" value="Java" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <Java />
-      <Profilers>
-        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
-        <option name="GAPID_ENABLED" value="false" />
-        <option name="GAPID_DISABLE_PCS" value="false" />
-        <option name="SUPPORT_LIB_ENABLED" value="true" />
-        <option name="INSTRUMENTATION_ENABLED" value="true" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
-      <module name="" />
-      <option name="TESTING_TYPE" value="0" />
-      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="EXTRA_OPTIONS" value="" />
-      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="DEBUGGER_TYPE" value="Java" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <Java />
-      <Profilers>
-        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
-        <option name="GAPID_ENABLED" value="false" />
-        <option name="GAPID_DISABLE_PCS" value="false" />
-        <option name="SUPPORT_LIB_ENABLED" value="true" />
-        <option name="INSTRUMENTATION_ENABLED" value="true" />
-      </Profilers>
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -844,7 +725,7 @@
     </recent_temporary>
   </component>
   <component name="SbtLocalSettings">
-    <option name="lastUpdateTimestamp" value="1478266032771" />
+    <option name="lastUpdateTimestamp" value="1482467137739" />
     <option name="externalProjectsViewState">
       <projects_view />
     </option>
@@ -877,33 +758,33 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295964" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3277405" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32779622" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15738758" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21199143" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15865384" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21153846" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668883" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32779622" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -918,15 +799,8 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxscala_2.11/0.26.3/1e5e33102a592b018698466e3384f05c9363cf5f/rxscala_2.11-0.26.3-sources.jar!/rx/lang/scala/Scheduler.scala" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxscala_2.11/0.26.3/1e5e33102a592b018698466e3384f05c9363cf5f/rxscala_2.11-0.26.3-sources.jar!/rx/lang/scala/schedulers/IOScheduler.scala" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.0/ce55d19a7aae6567b44e05f90ec0d065a41524/rxjava-1.2.0-sources.jar!/rx/Observable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3800">
-          <caret line="190" column="21" lean-forward="false" selection-start-line="190" selection-start-column="21" selection-end-line="190" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.0/ce55d19a7aae6567b44e05f90ec0d065a41524/rxjava-1.2.0-sources.jar!/rx/Observable.java" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.2/6dcb0484cb26269e04429f6c631ff05e59182a60/rxjava-1.2.2-sources.jar!/rx/Observable.java" />
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
@@ -1047,13 +921,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Implicits.scala" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.2/6dcb0484cb26269e04429f6c631ff05e59182a60/rxjava-1.2.2-sources.jar!/rx/functions/Action1.java" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.2/6dcb0484cb26269e04429f6c631ff05e59182a60/rxjava-1.2.2-sources.jar!/rx/Observable.java" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.0/ce55d19a7aae6567b44e05f90ec0d065a41524/rxjava-1.2.0-sources.jar!/rx/Observable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3260">
-          <caret line="190" column="21" lean-forward="false" selection-start-line="190" selection-start-column="21" selection-end-line="190" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.0/ce55d19a7aae6567b44e05f90ec0d065a41524/rxjava-1.2.0-sources.jar!/rx/Observable.java" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxscala_2.11/0.26.3/1e5e33102a592b018698466e3384f05c9363cf5f/rxscala_2.11-0.26.3-sources.jar!/rx/lang/scala/Scheduler.scala" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxscala_2.11/0.26.3/1e5e33102a592b018698466e3384f05c9363cf5f/rxscala_2.11-0.26.3-sources.jar!/rx/lang/scala/schedulers/IOScheduler.scala" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxscala_2.11/0.26.3/1e5e33102a592b018698466e3384f05c9363cf5f/rxscala_2.11-0.26.3-sources.jar!/rx/lang/scala/Observable.scala" />
@@ -1100,35 +968,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/xdandroid/xduploadclient/Main.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/OSSMain.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="15" column="6" lean-forward="false" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/PutObjectProgressListener.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/build/classes/main/com/xdandroid/xduploadclient/Main.class" />
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Environment.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/XdUpdateBean.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.8/17178a95c4b47c0a9745cfb8d01924359824fd7c/scala-library-2.11.8-sources.jar!/scala/io/Codec.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
@@ -1143,26 +983,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Utils.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="711">
-          <caret line="72" column="0" lean-forward="false" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="20" column="16" lean-forward="false" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
+        <state relative-caret-position="723">
+          <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Environment.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.1/25088b0c29e5f4547dabc148a22af949d1d9ca8c/scala-library-2.12.1-sources.jar!/scala/Array.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="522" column="12" lean-forward="false" selection-start-line="522" selection-start-column="12" selection-end-line="522" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/OSSMain.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="482">
+          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+          <folding>
+            <element signature="e#38#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/PutObjectProgressListener.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/Utils.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="48" />
+          <caret line="16" column="7" lean-forward="false" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/xdandroid/xduploadclient/XdUpdateBean.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
           <folding />
         </state>
       </provider>
@@ -1172,7 +1046,12 @@
     <states>
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
-          <artifact-editor />
+          <artifact-editor>
+            <show-content>
+              <type id="artifact" />
+              <type id="library" />
+            </show-content>
+          </artifact-editor>
           <last-edited>XdUploadClient:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
@@ -1222,7 +1101,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>XdUploadClient_main|XdUploadClient</last-edited>
+          <last-edited>XdUploadClient</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1234,7 +1113,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>Gradle: com.aliyun.oss:aliyun-sdk-oss:2.3.0</last-edited>
+          <last-edited>Gradle: com.aliyun.oss:aliyun-sdk-oss:2.4.0</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

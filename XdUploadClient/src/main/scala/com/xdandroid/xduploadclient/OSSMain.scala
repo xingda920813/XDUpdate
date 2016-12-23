@@ -5,8 +5,9 @@ import java.io._
 import com.aliyun.oss._
 import com.aliyun.oss.common.auth._
 import com.aliyun.oss.model._
-import rx.lang.scala.schedulers._
-import rx.lang.scala.{Observable, Subscriber}
+import rx.Observable._
+import rx._
+import rx.schedulers._
 
 /**
   * Created by xingda on 16-11-4.
@@ -24,14 +25,22 @@ object OSSMain {
   def doUpload() {
     val credentialsProvider = new DefaultCredentialProvider(Environment.sAccessKeyId, Environment.sAccessKeySecret)
     val oss = new OSSClient(Environment.sEndpoint, credentialsProvider)
-    val jsonObsrv = Observable((s: Subscriber[Boolean]) => {putObject("json", oss, s)}).subscribeOn(IOScheduler())
-    val apkObsrv = Observable((s: Subscriber[Boolean]) => {putObject("apk", oss, s)}).subscribeOn(IOScheduler())
-    Observable.combineLatest(Iterable(jsonObsrv, apkObsrv)) ((_: Seq[Boolean]) => true)
-      .observeOn(ImmediateScheduler())
-      .subscribe((_: Boolean) => {
-        oss.shutdown()
-        System.exit(0)
-      }, (t: Throwable) => t.printStackTrace())
+    val jsonObsrv = Observable.create(new OnSubscribe[Boolean] {
+      override def call(t: Subscriber[_ >: Boolean]): Unit = putObject("json", oss, t)
+    }).subscribeOn(Schedulers.io())
+    val apkObsrv = Observable.create(new OnSubscribe[Boolean] {
+      override def call(t: Subscriber[_ >: Boolean]): Unit = putObject("apk", oss, t)
+    }).subscribeOn(Schedulers.io())
+    Observable.combineLatest(jsonObsrv, apkObsrv, (_: Boolean, _: Boolean) => true)
+    .observeOn(Schedulers.immediate())
+    .asInstanceOf[Observable[Boolean]]
+    .subscribe((_: Boolean) => {
+      oss.shutdown()
+      System.exit(0)
+    }, (t: Throwable) => {
+      t.printStackTrace()
+      System.exit(1)
+    })
   }
 
   def putObject(theType: String, oss: OSS, subscriber: Subscriber[_ >: Boolean]) {

@@ -19,8 +19,7 @@ sourceSets {
 
 repositories {
     mavenLocal()
-    maven { url "http://114.215.145.40:8081/nexus/content/repositories/bintray" }
-    maven { url "http://114.215.145.40:8081/nexus/content/repositories/central" }
+    maven { url "http://114.215.145.40:8081/nexus/content/groups/Android" }
     maven {
         name "typesafe-maven-release"
         url "https://repo.typesafe.com/typesafe/maven-releases"
@@ -33,9 +32,9 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.8'
+    compile group: 'org.scala-lang', name: 'scala-library', version: '+'
     compile 'com.aliyun.oss:aliyun-sdk-oss:+'
-    compile 'io.reactivex:rxscala_2.11:+'
+    compile 'io.reactivex:rxjava:+'
     compile 'net.dongliu:apk-parser:+'
     compile 'com.google.code.gson:gson:+'
 }

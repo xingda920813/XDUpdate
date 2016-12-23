@@ -2,7 +2,6 @@
   <library name="Gradle: org.apache.httpcomponents:httpclient:4.4.1">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.4.1/16d0bc512222f1253ee6b64d389c84e22f697f0/httpclient-4.4.1.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.4.1/httpclient-4.4.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
