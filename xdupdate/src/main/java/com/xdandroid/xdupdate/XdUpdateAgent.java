@@ -235,7 +235,7 @@ public class XdUpdateAgent {
                 }
             });
         }
-        builder.show();
+        try {builder.show();} catch (Exception ignored) {}
     }
 
     public static class Builder {

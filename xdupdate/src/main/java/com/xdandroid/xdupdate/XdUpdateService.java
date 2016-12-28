@@ -92,8 +92,7 @@ public class XdUpdateService extends Service {
                 .setTicker(title)
                 .setSmallIcon(smallIconResId)
                 .setContentTitle(title)
-                .setContentText("")
-                .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(), 3, new Intent("com.xdandroid.xdupdate.DeleteUpdate"), PendingIntent.FLAG_CANCEL_CURRENT));
+                .setContentText("");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setShowWhen(true);
             mBuilder.setVibrate(new long[0]);
