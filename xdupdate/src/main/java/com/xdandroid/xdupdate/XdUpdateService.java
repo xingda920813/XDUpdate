@@ -13,9 +13,6 @@ import okhttp3.*;
 import rx.*;
 import rx.schedulers.*;
 
-/**
- * Created by XingDa on 2016/04/24.
- */
 public class XdUpdateService extends Service {
 
     protected Notification.Builder mBuilder;
@@ -54,8 +51,7 @@ public class XdUpdateService extends Service {
                     } else {
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
                         mNotificationManager.notify(2, mBuilder
-                                .setContentText(XdUpdateUtils.formatToMegaBytes(mLength) + "M/" +
-                                        XdUpdateUtils.formatToMegaBytes(mFileLength) + "M")
+                                .setContentText(XdUpdateUtils.formatToMegaBytes(mLength) + "M/" + XdUpdateUtils.formatToMegaBytes(mFileLength) + "M")
                                 .setProgress(mFileLength, mLength, false)
                                 .build());
                         sendEmptyMessageDelayed(TYPE_DOWNLOADING, 500);

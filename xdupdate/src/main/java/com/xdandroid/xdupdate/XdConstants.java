@@ -2,9 +2,6 @@ package com.xdandroid.xdupdate;
 
 import java.io.*;
 
-/**
- * Created by XingDa on 2016/5/3.
- */
 public class XdConstants implements Serializable {
 
     protected static boolean debugMode = false;

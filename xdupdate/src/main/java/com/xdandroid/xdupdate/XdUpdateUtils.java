@@ -17,9 +17,6 @@ import rx.*;
 import rx.android.schedulers.*;
 import rx.schedulers.*;
 
-/**
- * Created by XingDa on 2016/04/24.
- */
 public class XdUpdateUtils {
 
     protected XdUpdateUtils() {}
