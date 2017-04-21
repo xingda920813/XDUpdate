@@ -19,7 +19,7 @@ sourceSets {
 
 repositories {
     mavenLocal()
-    maven { url "http://114.215.145.40:8081/nexus/content/groups/Android" }
+    jcenter()
     maven {
         name "typesafe-maven-release"
         url "https://repo.typesafe.com/typesafe/maven-releases"
@@ -29,6 +29,7 @@ repositories {
         url "https://repo.typesafe.com/typesafe/ivy-releases"
         layout "ivy"
     }
+    mavenCentral()
 }
 
 dependencies {
