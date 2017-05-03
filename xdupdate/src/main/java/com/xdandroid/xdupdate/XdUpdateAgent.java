@@ -9,15 +9,16 @@ import android.support.v7.app.AlertDialog;
 import android.text.*;
 
 import org.json.*;
+import org.reactivestreams.*;
 
 import java.io.*;
 import java.util.*;
 
+import io.reactivex.*;
+import io.reactivex.android.schedulers.*;
+import io.reactivex.functions.*;
+import io.reactivex.schedulers.*;
 import okhttp3.*;
-import rx.Observable;
-import rx.*;
-import rx.android.schedulers.*;
-import rx.schedulers.*;
 
 public class XdUpdateAgent {
 
@@ -46,36 +47,29 @@ public class XdUpdateAgent {
         if (mUpdateBeanProvided != null) {
             updateMatters(mUpdateBeanProvided, activity);
         } else {
-            Observable.create(new Observable.OnSubscribe<String>() {
+            Flowable.create(new FlowableOnSubscribe<String>() {
                 @Override
-                public void call(Subscriber<? super String> subscriber) {
+                public void subscribe(FlowableEmitter<String> e) throws Exception {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder().url(mJsonUrl).build();
                     Response response;
                     try {
                         response = client.newCall(request).execute();
                         if (response.isSuccessful()) {
-                            subscriber.onNext(response.body().string());
+                            e.onNext(response.body().string());
                         } else {
-                            subscriber.onError(new IOException(response.code() + ": " + response.body().string()));
+                            e.onError(new IOException(response.code() + ": " + response.body().string()));
                         }
                     } catch (Throwable t) {
-                        subscriber.onError(t);
+                        e.onError(t);
                     }
                 }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                    new Subscriber<String>() {
-
-                        public void onCompleted() {}
-
+            }, BackpressureStrategy.BUFFER)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
                         @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            mForceUpdate = false;
-                        }
-
-                        @Override
-                        public void onNext(String responseBody) {
+                        public void accept(String responseBody) throws Exception {
                             if (XdConstants.debugMode) System.out.println(responseBody);
                             final XdUpdateBean xdUpdateBean = new XdUpdateBean();
                             try {
@@ -92,6 +86,12 @@ public class XdUpdateAgent {
                                 return;
                             }
                             updateMatters(xdUpdateBean, activity);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            mForceUpdate = false;
                         }
                     });
         }
@@ -113,11 +113,12 @@ public class XdUpdateAgent {
             }
             final File file = new File(activity.getExternalCacheDir(), "update.apk");
             if (file.exists()) {
-                XdUpdateUtils.getMd5ByFile(file, new Subscriber<String>() {
+                XdUpdateUtils.getMd5ByFile(file, new FlowableSubscriber<String>() {
 
                     boolean fileExists = false;
 
-                    public void onCompleted() {}
+                    public void onSubscribe(Subscription s) {}
+                    public void onComplete() {}
 
                     @Override
                     public void onError(Throwable e) {

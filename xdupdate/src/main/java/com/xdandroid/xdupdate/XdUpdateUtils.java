@@ -12,10 +12,9 @@ import java.security.*;
 import java.text.*;
 import java.util.*;
 
-import rx.Observable;
-import rx.*;
-import rx.android.schedulers.*;
-import rx.schedulers.*;
+import io.reactivex.*;
+import io.reactivex.android.schedulers.*;
+import io.reactivex.schedulers.*;
 
 public class XdUpdateUtils {
 
@@ -42,10 +41,10 @@ public class XdUpdateUtils {
         return new DecimalFormat("#.0").format(megaBytes);
     }
 
-    public static Subscription getMd5ByFile(final File file, Subscriber<String> md5Subscriber) {
-        return Observable.create(new Observable.OnSubscribe<String>() {
+    public static void getMd5ByFile(final File file, FlowableSubscriber<String> md5Subscriber) {
+        Flowable.create(new FlowableOnSubscribe<String>() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
+            public void subscribe(FlowableEmitter<String> e) throws Exception {
                 FileInputStream fis = null;
                 try {
                     fis = new FileInputStream(file);
@@ -53,16 +52,17 @@ public class XdUpdateUtils {
                     MessageDigest md5 = MessageDigest.getInstance("MD5");
                     md5.update(byteBuffer);
                     BigInteger bi = new BigInteger(1, md5.digest());
-                    subscriber.onNext(String.format("%032x", bi));
+                    e.onNext(String.format("%032x", bi));
                 } catch (Throwable t) {
-                    subscriber.onError(t);
+                    e.onError(t);
                 } finally {
                     closeQuietly(fis);
                 }
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(md5Subscriber);
+        }, BackpressureStrategy.BUFFER)
+                       .subscribeOn(Schedulers.io())
+                       .observeOn(AndroidSchedulers.mainThread())
+                       .subscribe(md5Subscriber);
     }
 
     public static String getMd5ByFile(File file) {
