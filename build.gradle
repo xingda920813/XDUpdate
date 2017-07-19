@@ -24,7 +24,3 @@ task clean(type: Delete) {
 task javadoc(type: Javadoc) {
     options.encoding = "utf-8"
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
-}
