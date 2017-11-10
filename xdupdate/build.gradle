@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/xingda920813/XDUpdate'
     gitUrl = 'https://github.com/xingda920813/XDUpdate.git'
 
-    libraryVersion = '1.8.0'
+    libraryVersion = '1.9.1'
 
     developerId = 'xingda920813'
     developerName = 'Da Xing'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 32
-        versionName "1.8.0"
+        versionCode 34
+        versionName "1.9.1"
     }
     buildTypes {
         release {
@@ -52,16 +52,6 @@ dependencies {
     api 'io.reactivex.rxjava2:rxandroid:2.+'
     api 'com.android.support:appcompat-v7:+'
 }
-
-task makeJar(type: Copy) {
-    delete 'build/libs/XDUpdate-1.8.0.jar'
-    from('build/intermediates/bundles/release/')
-    into('build/libs/')
-    include('classes.jar')
-    rename ('classes.jar', 'XDUpdate-1.8.0.jar')
-}
-
-makeJar.dependsOn(build)
 
 // Place it at the end of the mFile
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'

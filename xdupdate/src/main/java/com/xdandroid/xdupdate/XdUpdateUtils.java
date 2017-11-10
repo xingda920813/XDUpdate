@@ -13,6 +13,8 @@ import java.text.*;
 import java.util.*;
 
 import io.reactivex.*;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.*;
 import io.reactivex.schedulers.*;
 
@@ -41,10 +43,10 @@ public class XdUpdateUtils {
         return new DecimalFormat("#.0").format(megaBytes);
     }
 
-    public static void getMd5ByFile(final File file, FlowableSubscriber<String> md5Subscriber) {
-        Flowable.create(new FlowableOnSubscribe<String>() {
+    public static void getMd5ByFile(final File file, Observer<String> md5Subscriber) {
+        Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void subscribe(FlowableEmitter<String> e) throws Exception {
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
                 FileInputStream fis = null;
                 try {
                     fis = new FileInputStream(file);
@@ -59,10 +61,10 @@ public class XdUpdateUtils {
                     closeQuietly(fis);
                 }
             }
-        }, BackpressureStrategy.BUFFER)
-                       .subscribeOn(Schedulers.io())
-                       .observeOn(AndroidSchedulers.mainThread())
-                       .subscribe(md5Subscriber);
+        })
+                  .subscribeOn(Schedulers.io())
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(md5Subscriber);
     }
 
     public static String getMd5ByFile(File file) {

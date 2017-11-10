@@ -97,9 +97,9 @@ public class XdUpdateService extends Service {
             mBuilder.setPriority(Notification.PRIORITY_HIGH);
         }
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mDisposable = Flowable.create(new FlowableOnSubscribe<Response>() {
+        mDisposable = Observable.create(new ObservableOnSubscribe<Response>() {
             @Override
-            public void subscribe(FlowableEmitter<Response> e) throws Exception {
+            public void subscribe(ObservableEmitter<Response> e) throws Exception {
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder().url(xdUpdateBean.url).build();
                 Response response;
@@ -114,9 +114,9 @@ public class XdUpdateService extends Service {
                     e.onError(t);
                 }
             }
-        }, BackpressureStrategy.BUFFER)
-                              .subscribeOn(Schedulers.io())
-                              .subscribe(new Consumer<Response>() {
+        })
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(new Consumer<Response>() {
             @Override
             public void accept(Response response) throws Exception {
                 InputStream is = null;

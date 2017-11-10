@@ -9,13 +9,15 @@ import android.support.v7.app.AlertDialog;
 import android.text.*;
 
 import org.json.*;
-import org.reactivestreams.*;
 
 import java.io.*;
 import java.util.*;
 
+import io.reactivex.Observable;
 import io.reactivex.*;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.*;
+import io.reactivex.disposables.*;
 import io.reactivex.functions.*;
 import io.reactivex.schedulers.*;
 import okhttp3.*;
@@ -47,9 +49,9 @@ public class XdUpdateAgent {
         if (mUpdateBeanProvided != null) {
             updateMatters(mUpdateBeanProvided, activity);
         } else {
-            Flowable.create(new FlowableOnSubscribe<String>() {
+            Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
-                public void subscribe(FlowableEmitter<String> e) throws Exception {
+                public void subscribe(ObservableEmitter<String> e) throws Exception {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder().url(mJsonUrl).build();
                     Response response;
@@ -64,7 +66,7 @@ public class XdUpdateAgent {
                         e.onError(t);
                     }
                 }
-            }, BackpressureStrategy.BUFFER)
+            })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<String>() {
@@ -113,11 +115,12 @@ public class XdUpdateAgent {
             }
             final File file = new File(activity.getExternalCacheDir(), "update.apk");
             if (file.exists()) {
-                XdUpdateUtils.getMd5ByFile(file, new FlowableSubscriber<String>() {
+                XdUpdateUtils.getMd5ByFile(file, new Observer<String>() {
 
                     boolean fileExists = false;
 
-                    public void onSubscribe(Subscription s) {}
+                    public void onSubscribe(Disposable s) {}
+
                     public void onComplete() {}
 
                     @Override
