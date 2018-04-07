@@ -1,7 +1,7 @@
 ## XDUpdate
 #### Android 自动更新 / 阿里云 OSS 一键上传更新
 
-- 支持Android 7.1，不会因FileUriExposedException而无法安装下载的APK
+- 支持Android 8.1，不会因FileUriExposedException而无法安装下载的APK
 
 - JSON、APK、Map文件的URL需要支持外链，即可以被直接访问，可考虑放在Git仓库、OSS或自己的服务器上
 
