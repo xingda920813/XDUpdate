@@ -1,4 +1,7 @@
 ## XDUpdate
+
+<a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg"></a>
+
 #### Android 自动更新 / 阿里云 OSS 一键上传更新
 
 - 支持Android 8.1，不会因FileUriExposedException而无法安装下载的APK
